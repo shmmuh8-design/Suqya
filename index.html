@@ -32,6 +32,8 @@
   --bg:#0B1A1D; --surface:#12262A; --fg:#E4EFEE; --muted:#8FA6A9; --line:#22393D;
   --accent:#3FB6C3; --accent-ink:#06191C; --soft:#173539; --sand:#D8B87E;
   --ok:#5BC48A; --warn:#E3A945; --bad:#E07468; color-scheme:dark}
+[hidden]{display:none!important}
+@media (max-width:430px){header .brand small{display:none}header .brand h1{font-size:23px}}
 html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.6;direction:rtl}
 *{box-sizing:border-box}
@@ -116,6 +118,19 @@ h2{font-family:var(--display);font-size:20px;margin:6px 0 0;text-wrap:balance}
 .rcpt{max-height:120px;border-radius:10px;align-self:flex-start;border:1px solid var(--line)}
 .x2{border:0;background:var(--soft);width:34px;height:34px;border-radius:50%}
 #pform{padding-top:18px;max-height:92vh;overflow:auto}
+.role button{padding:6px 10px}
+.brands{display:flex;gap:10px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}
+.bchip{flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;width:76px;font-size:11px;color:var(--muted);text-align:center}
+.bchip .logo{width:56px;height:56px;border-radius:50%;font-size:20px;outline:2px solid transparent;outline-offset:3px;transition:outline-color .2s}
+.bchip[aria-pressed="true"]{color:var(--fg);font-weight:600}
+.bchip[aria-pressed="true"] .logo{outline-color:var(--accent)}
+.factory{background:linear-gradient(135deg,color-mix(in srgb,var(--sand) 22%,var(--surface)),var(--surface));border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.factory .row b{font-size:17px}
+.moq{font-size:11px;color:var(--warn)}
+.chain{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.chain b{color:var(--accent);font-weight:600}
+.card.dist{flex-direction:row;gap:12px;align-items:center}
+.dist .info{flex:1;min-width:0}
 .prod button.ic{border:0;padding:0;position:relative}
 .prod button.ic:after{content:"3D";position:absolute;bottom:-5px;left:-5px;background:var(--fg);color:var(--bg);font-size:9px;font-weight:700;padding:1px 5px;border-radius:6px}
 .prod .nm{border:0;background:none;padding:0;text-align:right;font-weight:600}
@@ -208,6 +223,7 @@ nav button[aria-current="page"]{color:var(--accent);font-weight:600}
     <div class="role" role="group" aria-label="نوع الحساب">
       <button id="r-c" aria-pressed="true">مستهلك</button>
       <button id="r-s" aria-pressed="false">مورّد</button>
+      <button id="r-co" aria-pressed="false">شركة</button>
     </div>
   </header>
   <main id="view"></main>
@@ -497,8 +513,37 @@ const SEED={
  ],
  my:[]
 };
-const DBV=3;
+const DBV=4;
 SEED.suppliers.forEach((s,i)=>{s.bank=["بنك مسقط","البنك الوطني العماني","بنك ظفار","بنك صحار الدولي"][i%4];s.accName=s.name;s.acct=`0${310+i*7} ${4821+i*137} ${1000+i*911} 0${i}`});
+const BR={s1:["c1"],s2:["c1"],s3:[],s4:["c1","c2"],s5:["c3"],s6:["c1"],s7:["c2"],s8:[]};
+SEED.suppliers.forEach(s=>s.brands=BR[s.id]||[]);
+SEED.companies=[
+ {id:"c1",name:"مصنع نبع الحجر للمياه",short:"نبع الحجر",color:"#1F6F8B",city:"الرستاق",govs:["مسقط","جنوب الباطنة","شمال الباطنة","الداخلية"],rating:4.9,minOrder:50,lead:"24 ساعة",bank:"بنك مسقط",acct:"0412 7781 2290 01",about:"مياه جوفية من جبال الحجر، معالجة بالأوزون"},
+ {id:"c2",name:"شركة عذب الجبل للمياه",short:"عذب الجبل",color:"#6B4E9B",city:"نزوى",govs:["الداخلية","مسقط","الظاهرة","شمال الشرقية","جنوب الشرقية"],rating:4.8,minOrder:40,lead:"48 ساعة",bank:"البنك الوطني العماني",acct:"0533 1902 6614 02",about:"تعبئة قوارير وجوالين لمحافظات الداخل والشرقية"},
+ {id:"c3",name:"مصنع صفاء ظفار",short:"صفاء ظفار",color:"#B5651D",city:"صلالة",govs:["ظفار","الوسطى"],rating:4.7,minOrder:30,lead:"24 ساعة",bank:"بنك ظفار",acct:"0627 4410 8835 03",about:"مياه الخريف المعبأة لمحافظتي ظفار والوسطى"}
+];
+SEED.wproducts=[
+ {id:"w1",cid:"c1",name:"كرتون قوارير 330 مل",desc:"40 قارورة",icon:"carton",price:1.15,moq:20,stock:true},
+ {id:"w2",cid:"c1",name:"كرتون قوارير 1.5 لتر",desc:"12 قارورة",icon:"bottle",price:1.0,moq:20,stock:true},
+ {id:"w3",cid:"c1",name:"جالون 5 جالون (عبوة جديدة)",desc:"مع العبوة",icon:"gallon",price:2.3,moq:10,stock:true},
+ {id:"w4",cid:"c1",name:"تعبئة جوالين بالجملة",desc:"استبدال عبوات فارغة",icon:"refill",price:0.3,moq:30,stock:true},
+ {id:"w5",cid:"c2",name:"كرتون قوارير 330 مل",desc:"40 قارورة",icon:"carton",price:1.2,moq:20,stock:true},
+ {id:"w6",cid:"c2",name:"كرتون قوارير 500 مل",desc:"24 قارورة",icon:"carton",price:0.85,moq:20,stock:true},
+ {id:"w7",cid:"c2",name:"تعبئة جوالين بالجملة",desc:"استبدال عبوات فارغة",icon:"refill",price:0.32,moq:30,stock:true},
+ {id:"w8",cid:"c3",name:"كرتون قوارير 330 مل",desc:"40 قارورة",icon:"carton",price:1.1,moq:15,stock:true},
+ {id:"w9",cid:"c3",name:"جالون 5 جالون (عبوة جديدة)",desc:"مع العبوة",icon:"gallon",price:2.2,moq:10,stock:false}
+];
+SEED.border=[
+ {id:"W-204",cid:"c1",sid:"s1",items:[{wid:"w1",q:60},{wid:"w4",q:80}],status:0,time:"منذ ساعة",pay:"تحويل بنكي",ps:"pending",ref:"TRX-90311",deliver:"مستودع المعبيلة الصناعية، السيب"},
+ {id:"W-201",cid:"c1",sid:"s6",items:[{wid:"w2",q:40}],status:1,time:"منذ 5 ساعات",pay:"آجل 30 يوم",ps:"credit",deliver:"صحار الصناعية، مخزن 4"},
+ {id:"W-198",cid:"c1",sid:"s2",items:[{wid:"w4",q:120}],status:2,time:"أمس",pay:"آجل 30 يوم",ps:"credit",deliver:"الخوض السابعة، محل 12"},
+ {id:"W-190",cid:"c1",sid:"s4",items:[{wid:"w1",q:100},{wid:"w2",q:50}],status:3,time:"قبل 3 أيام",pay:"تحويل بنكي",ps:"confirmed",deliver:"مطرح، مستودع 7"}
+];
+const BSTEPS=["طلب جديد","مؤكَّد","قيد الشحن","تم التسليم"];
+const C=id=>db.companies.find(c=>c.id==id), W=id=>db.wproducts.find(w=>w.id==id);
+const btotal=o=>o.items.reduce((a,i)=>a+W(i.wid).price*i.q,0);
+const govOf=w=>Object.keys(GOV).find(g=>GOV[g].includes(w));
+const covers=(c,s)=>s.areas.some(a=>c.govs.includes(govOf(a)));
 const PT={
  home:["بيت",'<path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/>'],
  office:["مكتب",'<path d="M4 21V5l8-2v18M12 8h8v13M7 8h2M7 12h2M7 16h2M15 12h2M15 16h2"/>'],
@@ -519,7 +564,7 @@ const PILL=["p-new","p-acc","p-way","p-done"];
 let db; try{db=JSON.parse(localStorage.getItem("suqya"))}catch(e){}
 if(!db||!db.suppliers||db.v!==DBV){db=JSON.parse(JSON.stringify(SEED));db.v=DBV}
 const save=()=>{try{localStorage.setItem("suqya",JSON.stringify(db))}catch(e){}};
-const st={role:"c",tab:"home",area:"كل المناطق",type:"الكل",sup:null,cart:{},cartSid:null,slot:"الآن",fstat:"all",me:"s1",pay:"card",placeId:"pl1",form:{},receipt:null,ptype:"home",flip:false};
+const st={role:"c",tab:"home",area:"كل المناطق",type:"الكل",sup:null,cart:{},cartSid:null,slot:"الآن",fstat:"all",me:"s1",pay:"card",placeId:"pl1",form:{},receipt:null,ptype:"home",flip:false,coMe:"c1",co:null,bcart:{},bcartCo:null,bpay:"transfer",brand:null,bref:"",bfstat:"all"};
 const $=s=>document.querySelector(s);
 const omr=n=>n.toFixed(3)+" ر.ع";
 const P=id=>db.products.find(p=>p.id==id), S=id=>db.suppliers.find(s=>s.id==id);
@@ -529,7 +574,8 @@ const total=o=>o.items.reduce((a,i)=>a+P(i.pid).price*i.q,0);
 
 const NAV={
  c:[["home","الرئيسية",'<path d="M3 11l9-8 9 8v10H3z"/>'],["cart","السلة",'<path d="M3 4h2l2 12h12l2-8H7"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/>'],["orders","طلباتي",'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>']],
- s:[["sorders","الطلبات",'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>'],["sproducts","منتجاتي",'<path d="M3 7l9-4 9 4v11l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v11"/>'],["sprofile","المتجر",'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>']]
+ s:[["sorders","الطلبات",'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>'],["sproducts","منتجاتي",'<path d="M3 7l9-4 9 4v11l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v11"/>'],["scompanies","الشركات",'<path d="M2 21V10l6 3V9l6 3V5h8v16zM6 17h2M12 17h2M18 9h2M18 13h2M18 17h2"/>'],["sprofile","المتجر",'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>']],
+ co:[["corders","طلبات الجملة",'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>'],["cproducts","منتجات المصنع",'<path d="M3 7l9-4 9 4v11l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v11"/>'],["cdist","الموزعون",'<circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20c.8-3.5 3.5-5 7-5s6.2 1.5 7 5M15 14.5c3 0 5 1.3 6 4.5"/>'],["cprofile","الشركة",'<path d="M2 21V10l6 3V9l6 3V5h8v16zM6 17h2M12 17h2M18 9h2M18 13h2M18 17h2"/>']]
 };
 function renderNav(){
  const cartN=Object.values(st.cart).reduce((a,b)=>a+b,0);
@@ -541,18 +587,22 @@ function renderNav(){
 function render(){
  renderNav();
  const v=$("#view");
- ({home:st.sup?vSupplier:vHome,cart:vCart,orders:vOrders,sorders:vSOrders,sproducts:vSProducts,sprofile:vSProfile})[st.tab](v);
+ ({home:st.sup?vSupplier:vHome,cart:vCart,orders:vOrders,sorders:vSOrders,sproducts:vSProducts,sprofile:vSProfile,scompanies:st.co?vCompany:vCompanies,sbcart:vBCart,corders:vCOrders,cproducts:vCProducts,cdist:vCDist,cprofile:vCProfile})[st.tab](v);
  const n=Object.values(st.cart).reduce((a,b)=>a+b,0);
- const showBar=st.role=="c"&&n&&st.tab=="home";
+ const bn=Object.keys(st.bcart).length;
+ const showBar=(st.role=="c"&&n&&st.tab=="home")||(st.role=="s"&&bn&&st.tab=="scompanies");
  $("#cartbar").hidden=!showBar;
- if(showBar){const t=Object.entries(st.cart).reduce((a,[id,q])=>a+P(id).price*q,0);$("#cartBtn").innerHTML=`<span>عرض السلة · ${n}</span><span class="price">${omr(t)}</span>`}
+ if(showBar&&st.role=="c"){const t=Object.entries(st.cart).reduce((a,[id,q])=>a+P(id).price*q,0);$("#cartBtn").innerHTML=`<span>عرض السلة · ${n}</span><span class="price">${omr(t)}</span>`}
+ if(showBar&&st.role=="s"){const t=Object.entries(st.bcart).reduce((a,[id,q])=>a+W(id).price*q,0);$("#cartBtn").innerHTML=`<span>طلب الجملة · ${bn} صنف</span><span class="price">${omr(t)}</span>`}
  const slot=$("#slot3d");
  if(slot){if(Stage)Stage.mount(slot);else slot.innerHTML='<div class="fallback"><svg width="90" viewBox="0 0 100 100"><path d="M50 5S15 45 15 65a35 35 0 0 0 70 0C85 45 50 5 50 5Z" fill="rgba(255,255,255,.5)"/></svg></div>'}
  tiltBind();updateSheet();
 }
 
 function vHome(v){
- const sups=db.suppliers.filter(s=>inArea(s)&&(st.type=="الكل"||s.type==st.type));
+ const sups=db.suppliers.filter(s=>inArea(s)&&(st.type=="الكل"||s.type==st.type)&&(!st.brand||(s.brands||[]).includes(st.brand)));
+ const brandRow=`<div><h2>شركات المياه</h2><p class="sub">اختر علامتك المفضلة لترى من يوزّعها</p></div>
+ <div class="brands" role="group" aria-label="شركات المياه">${db.companies.map(c=>`<button class="bchip" data-brand="${c.id}" aria-pressed="${st.brand==c.id}"><span class="logo" style="background:${c.color}">${initial(c.short)}</span>${c.short}</button>`).join("")}</div>`;
  const opts=`<option value="كل المناطق" ${st.area=="كل المناطق"?"selected":""}>كل مناطق سلطنة عُمان</option>`+Object.entries(GOV).map(([g,ws])=>`<optgroup label="محافظة ${g}"><option value="gov:${g}" ${st.area=="gov:"+g?"selected":""}>كل ولايات ${g}</option>${ws.map(w=>`<option value="${w}" ${st.area==w?"selected":""}>${w}</option>`).join("")}</optgroup>`).join("");
  v.innerHTML=`
  <section class="hero">
@@ -561,8 +611,9 @@ function vHome(v){
   <p>اختر منطقتك وشوف الموردين اللي يغطّونها</p>
   <select id="area" aria-label="المحافظة أو الولاية">${opts}</select>
  </section>
- <div class="chips" role="group" aria-label="نوع المورّد">${["الكل","شركة","متجر","صهاريج"].map(t=>`<button class="chip" data-type="${t}" aria-pressed="${st.type==t}">${t=="صهاريج"?"وايتات وصهاريج":t=="شركة"?"شركات تعبئة":t=="متجر"?"متاجر":t}</button>`).join("")}</div>
- <div><h2>الموردون القريبون</h2><p class="sub">${sups.length} مورّد ${areaLabel()}</p></div>
+ ${brandRow}
+ <div class="chips" role="group" aria-label="نوع المورّد">${["الكل","شركة","متجر","صهاريج"].map(t=>`<button class="chip" data-type="${t}" aria-pressed="${st.type==t}">${t=="صهاريج"?"وايتات وصهاريج":t=="شركة"?"شركات توزيع":t=="متجر"?"متاجر":t}</button>`).join("")}</div>
+ <div><h2>الموردون القريبون</h2><p class="sub">${sups.length} مورّد ${areaLabel()}${st.brand?" · يوزّعون "+C(st.brand).short:""}</p></div>
  <div class="list">${sups.map(s=>`
   <button class="sup" data-sup="${s.id}">
    <div class="logo" style="background:${s.color}">${initial(s.name)}</div>
@@ -580,7 +631,8 @@ function vSupplier(v){
  <button class="back" id="back">→ رجوع للموردين</button>
  <div class="sup" style="cursor:default"><div class="logo" style="background:${s.color}">${initial(s.name)}</div>
   <div class="info"><b>${s.name}</b><div class="meta"><span>★ ${s.rating}</span><span>⏱ ${s.eta}</span><span>الحد الأدنى ${omr(s.min)}</span></div>
-  <div class="meta">يغطي: ${s.areas.join("، ")}</div></div></div>
+  <div class="meta">يغطي: ${s.areas.join("، ")}</div>
+  ${(s.brands||[]).length?`<div class="meta">يوزّع: ${s.brands.map(b=>C(b).short).join("، ")}</div>`:""}</div></div>
  ${s.open?"":'<div class="note" style="color:var(--bad)">المورّد مغلق الآن. تقدر تجدول الطلب لوقت لاحق.</div>'}
  <h2>المنتجات</h2>
  <div class="list">${ps.map(p=>{const q=st.cart[p.id]||0;return`
@@ -713,6 +765,120 @@ function vSProducts(v){
   <label for="np-i" style="flex:1">النوع<select id="np-i"><option value="carton">كرتون</option><option value="bottle">قوارير</option><option value="gallon">جالون</option><option value="refill">تعبئة</option><option value="truck">وايت</option></select></label></div>
   <button class="btn">إضافة</button></form>`;
 }
+/* ---------- Wholesale: supplier side ---------- */
+function bOrderCard(o,forCo){
+ const c=C(o.cid),s=S(o.sid),tot=btotal(o);
+ const pp=o.ps=="pending"?'<span class="pill p-new">بانتظار تأكيد التحويل</span>':o.ps=="confirmed"?'<span class="pill p-done">تم استلام التحويل</span>':o.ps=="credit"?'<span class="pill p-acc">آجل 30 يوم</span>':'<span class="pill p-acc">الدفع عند التسليم</span>';
+ return `<div class="card order">
+  <div class="row"><b>${o.id} · ${forCo?esc(s.name):esc(c.short)}</b><span class="pill ${PILL[o.status]}">${BSTEPS[o.status]}</span></div>
+  <div class="meta"><span>${o.time}</span>${forCo?`<span>📍 ${s.areas.slice(0,2).join("، ")}</span>`:`<span>${c.city}</span>`}</div>
+  <div class="locline">${pti("company",16)}<span>التسليم: ${esc(o.deliver||"")}</span></div>
+  <div>${o.items.map(i=>`<div class="row" style="font-size:13px"><span>${W(i.wid).name} × ${i.q}</span><span class="price">${omr(W(i.wid).price*i.q)}</span></div>`).join("")}</div>
+  <div class="row total"><span>المجموع</span><span class="price">${omr(tot)}</span></div>
+  <div class="row" style="align-items:center;font-size:13px"><span>${esc(o.pay)}${o.ref?` · مرجع <span dir="ltr">${esc(o.ref)}</span>`:""}</span>${pp}</div>
+  <div class="track">${BSTEPS.map((_,i)=>`<div class="${i<=o.status?"on":""}"></div>`).join("")}</div>
+  <div class="steps">${BSTEPS.map((x,i)=>`<span class="${i<=o.status?"on":""}">${x}</span>`).join("")}</div>
+  ${forCo&&o.ps=="pending"?`<button class="btn sm ghost" data-bconf="${o.id}" style="align-self:flex-start">تأكيد استلام التحويل</button>`:""}
+  ${forCo&&o.status<3?`<div style="display:flex;gap:8px">${o.status==0?`<button class="btn sm" data-bact="${o.id}">تأكيد الطلب</button><button class="btn sm ghost" data-brej="${o.id}">رفض</button>`:`<button class="btn sm" data-bact="${o.id}">${o.status==1?"شُحن للموزّع":"تم التسليم"}</button>`}</div>`:""}
+ </div>`}
+function vCompanies(v){
+ const me=S(st.me), mine=db.border.filter(o=>o.sid==st.me);
+ v.innerHTML=`<div><h2>شركات المياه</h2><p class="sub">اطلب مخزونك بالجملة مباشرة من المصنع</p></div>
+ <div class="chain"><span>المصنع</span>←<b>${esc(me.name)}</b>←<span>المستهلك</span></div>
+ <div class="list">${db.companies.map(c=>{const ok=covers(c,me);return`
+  <button class="sup" data-co="${c.id}"><div class="logo" style="background:${c.color}">${initial(c.short)}</div>
+   <div class="info"><b>${c.name}</b><div class="meta"><span>🏭 ${c.city}</span><span>★ ${c.rating}</span><span>⏱ ${c.lead}</span></div>
+   <div class="meta"><span>أقل طلب ${omr(c.minOrder)}</span></div>
+   <div class="meta" style="margin-top:4px">${ok?'<span class="tag">يوصّل لمنطقتك</span>':'<span class="tag closed">خارج تغطيتك</span>'}${(me.brands||[]).includes(c.id)?'<span class="tag">تتعامل معها</span>':""}</div></div></button>`}).join("")}</div>
+ <div><h2>طلباتي من الشركات</h2></div>
+ <div class="list">${mine.map(o=>bOrderCard(o,false)).join("")||'<div class="empty">ما عندك طلبات جملة بعد</div>'}</div>`;
+}
+function vCompany(v){
+ const c=C(st.co),ws=db.wproducts.filter(w=>w.cid==c.id);
+ v.innerHTML=`<button class="back" id="coback">→ رجوع للشركات</button>
+ <div class="factory"><div class="row"><b>${c.name}</b><span>★ ${c.rating}</span></div>
+  <div class="meta"><span>🏭 ${c.city}</span><span>⏱ التوريد خلال ${c.lead}</span><span>أقل طلب ${omr(c.minOrder)}</span></div>
+  <div class="meta">${esc(c.about||"")}</div>
+  <div class="meta">تغطي: ${c.govs.join("، ")}</div></div>
+ <h2>أسعار الجملة</h2>
+ <div class="list">${ws.map(w=>{const q=st.bcart[w.id]||0;return`<div class="prod"><button class="ic" data-wview="${w.id}" aria-label="عرض ثلاثي الأبعاد">${IC[w.icon]}</button>
+  <div class="info"><b>${w.name}</b><div class="meta"><span>${w.desc}</span></div><div class="price">${omr(w.price)} <small>/ للوحدة</small></div><div class="moq">أقل كمية ${w.moq}</div></div>
+  ${w.stock?`<div class="qty">${q?`<button data-bdec="${w.id}" aria-label="إنقاص">−</button><span>${q}</span>`:""}<button class="add" data-binc="${w.id}" aria-label="إضافة">+</button></div>`:'<span class="tag closed">نفد</span>'}</div>`}).join("")}</div>
+ <div class="note">الزر + يضيف أقل كمية أولاً، ثم 10 وحدات في كل ضغطة.</div>`;
+}
+function vBCart(v){
+ const ids=Object.keys(st.bcart);
+ if(!ids.length){v.innerHTML=`<h2>طلب الجملة</h2><div class="empty">ما أضفت أصنافاً بعد.<br><br><button class="btn sm" data-tab="scompanies">تصفّح الشركات</button></div>`;return}
+ const c=C(st.bcartCo),me=S(st.me),tot=ids.reduce((a,id)=>a+W(id).price*st.bcart[id],0),low=tot<c.minOrder;
+ v.innerHTML=`<button class="back" data-tab="scompanies">→ رجوع</button>
+ <div><h2>طلب الجملة</h2><p class="sub">من ${c.name}</p></div>
+ <section class="card"><div class="sec"><span class="n">1</span>الأصناف</div>
+  ${ids.map(id=>`<div class="row"><span>${W(id).name} × ${st.bcart[id]}</span><span class="price">${omr(W(id).price*st.bcart[id])}</span></div>`).join("")}
+  <div class="row total"><span>المجموع</span><span class="price">${omr(tot)}</span></div>
+  ${low?`<div class="note" style="color:var(--warn)">أقل طلب لهذه الشركة ${omr(c.minOrder)}. أضف ${omr(c.minOrder-tot)} للمتابعة.</div>`:""}</section>
+ <section class="card"><div class="sec"><span class="n">2</span>مكان التسليم</div>
+  <label for="b-dl">المستودع أو المحل<input id="b-dl" value="${esc(st.bdeliver||("مستودع "+me.name+"، "+me.areas[0]))}"></label>
+  ${covers(c,me)?"":'<div class="note" style="color:var(--warn)">منطقتك خارج تغطية هذه الشركة. قد تحتاج تستلم من المصنع.</div>'}</section>
+ <section class="card"><div class="sec"><span class="n">3</span>الدفع</div>
+  <div class="paytabs" role="group" aria-label="طريقة الدفع">${[["transfer","تحويل بنكي"],["credit","آجل 30 يوم"],["cod","عند التسليم"]].map(([k,l])=>`<button type="button" data-bpay="${k}" aria-pressed="${st.bpay==k}">${l}</button>`).join("")}</div>
+  ${st.bpay=="transfer"?`<div class="bank"><div class="row"><span>البنك</span><b>${c.bank}</b></div><div class="row"><span>اسم الحساب</span><b>${c.name}</b></div>
+   <div class="row" style="align-items:center"><span>رقم الحساب</span><span class="acct" dir="ltr">${c.acct}</span><button type="button" class="btn sm ghost" data-copy="${c.acct}">نسخ</button></div></div>
+   <label for="b-ref">رقم مرجع التحويل<input id="b-ref" dir="ltr" value="${esc(st.bref)}" placeholder="TRX-…"></label>`:st.bpay=="credit"?'<div class="note">يُضاف المبلغ إلى حسابك لدى الشركة ويُسدَّد خلال 30 يوماً، بعد موافقة الشركة.</div>':'<div class="note">تدفع لمندوب الشركة عند تسليم البضاعة.</div>'}</section>
+ <form id="bco"><button class="btn" ${low?"disabled style='opacity:.5'":""}>إرسال الطلب للشركة · ${omr(tot)}</button></form>`;
+}
+/* ---------- Company (factory) side ---------- */
+function vCOrders(v){
+ const c=C(st.coMe),all=db.border.filter(o=>o.cid==c.id);
+ const f=st.bfstat=="all"?all:all.filter(o=>st.bfstat=="active"?o.status<3:o.status==3);
+ const sales=all.filter(o=>o.status==3).reduce((a,o)=>a+btotal(o),0);
+ v.innerHTML=`<div><h2>${c.name}</h2><p class="sub">لوحة الشركة · طلبات الموزعين</p></div>
+ <div class="stats"><div class="stat"><b>${all.filter(o=>o.status==0).length}</b><span>طلبات جديدة</span></div>
+  <div class="stat"><b>${all.filter(o=>o.status==1||o.status==2).length}</b><span>قيد التنفيذ</span></div>
+  <div class="stat"><b>${sales.toFixed(0)}</b><span>مبيعات (ر.ع)</span></div></div>
+ <div class="chips">${[["all","الكل"],["active","النشطة"],["done","المسلّمة"]].map(([k,l])=>`<button class="chip" data-bf="${k}" aria-pressed="${st.bfstat==k}">${l}</button>`).join("")}</div>
+ <div class="list">${f.map(o=>bOrderCard(o,true)).join("")||'<div class="empty">لا توجد طلبات</div>'}</div>`;
+}
+function vCProducts(v){
+ const ws=db.wproducts.filter(w=>w.cid==st.coMe);
+ v.innerHTML=`<div><h2>منتجات المصنع</h2><p class="sub">سعر الجملة للوحدة وأقل كمية للطلب</p></div>
+ <div class="list">${ws.map(w=>`<div class="prod"><div class="ic">${IC[w.icon]}</div>
+  <div class="info"><b>${w.name}</b><div class="meta"><span>${w.desc}</span><span>${w.stock?"متوفر":"نفد"}</span></div>
+   <label for="moq-${w.id}" style="flex-direction:row;align-items:center;gap:6px;margin-top:4px">أقل كمية<input class="edit" id="moq-${w.id}" data-wmoq="${w.id}" type="number" min="1" value="${w.moq}" style="width:64px"></label></div>
+  <input class="edit" id="wp-${w.id}" data-wprice="${w.id}" type="number" step="0.05" min="0" value="${w.price}" aria-label="سعر الجملة">
+  <label class="switch" aria-label="متوفر"><input type="checkbox" data-wstock="${w.id}" ${w.stock?"checked":""}><span></span></label></div>`).join("")}</div>
+ <form id="cnp" class="card"><b>إضافة منتج جملة</b>
+  <label for="cn-n">اسم المنتج<input id="cn-n" required placeholder="مثال: كرتون قوارير 200 مل"></label>
+  <label for="cn-d">الوصف<input id="cn-d" placeholder="مثال: 48 قارورة"></label>
+  <div class="grid2"><label for="cn-p">سعر الجملة (ر.ع)<input id="cn-p" type="number" step="0.05" min="0" required></label>
+  <label for="cn-m">أقل كمية<input id="cn-m" type="number" min="1" value="20" required></label>
+  <label for="cn-i" class="full">النوع<select id="cn-i"><option value="carton">كرتون</option><option value="bottle">قوارير</option><option value="gallon">جالون</option><option value="refill">تعبئة</option></select></label></div>
+  <button class="btn">إضافة</button></form>`;
+}
+function vCDist(v){
+ const c=C(st.coMe);
+ const ds=db.suppliers.filter(s=>(s.brands||[]).includes(c.id)||db.border.some(o=>o.cid==c.id&&o.sid==s.id));
+ v.innerHTML=`<div><h2>الموزعون</h2><p class="sub">${ds.length} موزّع يبيع منتجات ${c.short} للمستهلكين</p></div>
+ <div class="list">${ds.map(s=>{const os=db.border.filter(o=>o.cid==c.id&&o.sid==s.id),sum=os.reduce((a,o)=>a+btotal(o),0),owe=os.filter(o=>o.ps=="credit").reduce((a,o)=>a+btotal(o),0);return`
+  <div class="card dist"><div class="logo" style="background:${s.color}">${initial(s.name)}</div>
+   <div class="info"><b>${esc(s.name)}</b><div class="meta"><span>${s.type}</span><span>📍 ${s.areas.slice(0,3).join("، ")}</span></div>
+   <div class="meta"><span>${os.length} طلب</span><span class="price">مشتريات ${omr(sum)}</span>${owe?`<span style="color:var(--warn)">آجل ${omr(owe)}</span>`:""}</div></div></div>`}).join("")||'<div class="empty">لا يوجد موزعون بعد</div>'}</div>
+ <div class="note">يظهر هنا كل مورّد طلب من شركتك أو يعرض علامتك للمستهلكين.</div>`;
+}
+function vCProfile(v){
+ const c=C(st.coMe);
+ v.innerHTML=`<div><h2>إعدادات الشركة</h2><p class="sub">اختر الحساب التجريبي الذي تديره</p></div>
+ <div class="card">
+  <label for="cme">الشركة<select id="cme">${db.companies.map(x=>`<option value="${x.id}" ${x.id==c.id?"selected":""}>${x.name}</option>`).join("")}</select></label>
+  <label for="c-about">نبذة<input id="c-about" value="${esc(c.about||"")}"></label>
+  <div class="grid2"><label for="c-min">أقل طلب (ر.ع)<input id="c-min" type="number" min="0" step="5" value="${c.minOrder}"></label>
+  <label for="c-lead">مدة التوريد<input id="c-lead" value="${esc(c.lead)}"></label></div>
+  <b style="margin-top:6px">بيانات التحويل البنكي</b>
+  <label for="c-bank">البنك<input id="c-bank" value="${esc(c.bank)}"></label>
+  <label for="c-acct">رقم الحساب<input id="c-acct" dir="ltr" value="${esc(c.acct)}"></label>
+  <div><label>محافظات التوريد (${c.govs.length})</label><div class="chips" style="flex-wrap:wrap;margin-top:6px">${Object.keys(GOV).map(g=>`<button class="chip" data-cgov="${g}" aria-pressed="${c.govs.includes(g)}">${g}</button>`).join("")}</div></div>
+ </div>
+ <button class="btn ghost" id="reset">إعادة البيانات التجريبية</button>`;
+}
 function vSProfile(v){
  const me=S(st.me);
  v.innerHTML=`<div><h2>إعدادات المتجر</h2><p class="sub">اختر الحساب التجريبي الذي تديره</p></div>
@@ -736,6 +902,7 @@ document.addEventListener("click",e=>{
  const t=e.target.closest("button");if(!t)return;
  const d=t.dataset;
  if(d.view){openViewer(d.view);return}
+ if(d.wview){const w=W(d.wview);viewing=null;$("#sheet").hidden=false;if(Viewer)Viewer.open(w.icon,$("#view3d"));$("#sh-n").textContent=w.name;$("#sh-p").textContent=omr(w.price)+" / وحدة";$("#sh-d").innerHTML=`<span>${w.desc}</span><span>أقل كمية ${w.moq}</span>`;$("#sh-q").innerHTML="";return}
  if(d.close){closeViewer();return}
  if(d.newplace){openPlace();return}
  if(d.pclose){$("#psheet").hidden=true;return}
@@ -747,15 +914,25 @@ document.addEventListener("click",e=>{
  if(d.place){st.placeId=d.place;}
  else if(d.pay){st.pay=d.pay;st.flip=false;}
  else if(d.confirm){db.orders.find(x=>x.id==d.confirm).ps="confirmed";save();toast("تم تأكيد استلام التحويل");}
- else
- if(t.id=="r-c"||t.id=="r-s"){st.role=t.id=="r-c"?"c":"s";st.tab=st.role=="c"?"home":"sorders";$("#r-c").setAttribute("aria-pressed",st.role=="c");$("#r-s").setAttribute("aria-pressed",st.role=="s");}
+ else if(["r-c","r-s","r-co"].includes(t.id)){st.role={"r-c":"c","r-s":"s","r-co":"co"}[t.id];st.tab={c:"home",s:"sorders",co:"corders"}[st.role];["r-c","r-s","r-co"].forEach(x=>$("#"+x).setAttribute("aria-pressed",x==t.id));window.scrollTo(0,0);}
+ else if(d.brand)st.brand=st.brand==d.brand?null:d.brand;
+ else if(d.co)st.co=d.co;
+ else if(t.id=="coback")st.co=null;
+ else if(d.binc){const w=W(d.binc);if(st.bcartCo&&st.bcartCo!=w.cid&&Object.keys(st.bcart).length){st.bcart={};toast("بدأنا طلب جملة جديد من هذه الشركة")}st.bcartCo=w.cid;st.bcart[w.id]=(st.bcart[w.id]||0)?st.bcart[w.id]+10:w.moq;}
+ else if(d.bdec){const w=W(d.bdec);const q=(st.bcart[w.id]||0)-10;if(q<w.moq)delete st.bcart[w.id];else st.bcart[w.id]=q;}
+ else if(d.bpay){const r=$("#b-ref"),dl=$("#b-dl");if(r)st.bref=r.value;if(dl)st.bdeliver=dl.value;st.bpay=d.bpay;}
+ else if(d.bf)st.bfstat=d.bf;
+ else if(d.bact){const o=db.border.find(x=>x.id==d.bact);o.status++;if(o.status==3){const s=S(o.sid);s.brands=s.brands||[];if(!s.brands.includes(o.cid))s.brands.push(o.cid)}save();toast("الحالة: "+BSTEPS[o.status]);}
+ else if(d.brej){db.border=db.border.filter(x=>x.id!=d.brej);save();toast("تم رفض الطلب");}
+ else if(d.bconf){db.border.find(x=>x.id==d.bconf).ps="confirmed";save();toast("تم تأكيد استلام التحويل");}
+ else if(d.cgov){const c=C(st.coMe);c.govs=c.govs.includes(d.cgov)?c.govs.filter(g=>g!=d.cgov):[...c.govs,d.cgov];save();}
  else if(d.tab){st.tab=d.tab;if(d.tab=="home")st.sup=null;}
  else if(d.type)st.type=d.type;
  else if(d.sup)st.sup=d.sup;
  else if(t.id=="back")st.sup=null;
  else if(d.inc){const p=P(d.inc);if(st.cartSid&&st.cartSid!=p.sid&&Object.keys(st.cart).length){st.cart={};toast("بدأنا سلة جديدة من هذا المورّد")}st.cartSid=p.sid;st.cart[p.id]=(st.cart[p.id]||0)+1;}
  else if(d.dec){st.cart[d.dec]--;if(!st.cart[d.dec])delete st.cart[d.dec];}
- else if(t.id=="cartBtn")st.tab="cart";
+ else if(t.id=="cartBtn")st.tab=st.role=="s"?"sbcart":"cart";
  else if(d.slot)st.slot=d.slot;
  else if(d.adv){const o=db.orders.find(x=>x.id==d.adv);o.status++;save();toast("تم تحديث حالة الطلب إلى: "+STEPS[o.status]);}
  else if(d.rej){db.orders=db.orders.filter(x=>x.id!=d.rej);save();toast("تم رفض الطلب");}
@@ -763,7 +940,7 @@ document.addEventListener("click",e=>{
  else if(d.cov){const me=S(st.me);me.areas=me.areas.includes(d.cov)?me.areas.filter(a=>a!=d.cov):[...me.areas,d.cov];save();}
  else if(t.id=="reset"){db=JSON.parse(JSON.stringify(SEED));db.v=DBV;st.placeId="pl1";st.cart={};save();toast("تمت إعادة البيانات");}
  else return;
- render();if(d.tab||d.sup||t.id=="back")window.scrollTo(0,0);
+ render();if(d.tab||d.sup||d.co||t.id=="back"||t.id=="coback")window.scrollTo(0,0);
 });
 document.addEventListener("change",e=>{
  const t=e.target,d=t.dataset;
@@ -776,6 +953,14 @@ document.addEventListener("change",e=>{
  else if(t.id=="min")S(st.me).min=parseFloat(t.value)||0;
  else if(["bank","accName","acct"].includes(t.id)){S(st.me)[t.id]=t.value.trim();save();toast("تم حفظ بيانات البنك");return}
  else if(t.id=="pf-area"||t.id=="pf-loc")return;
+ else if(t.id=="b-ref"){st.bref=t.value;return}
+ else if(t.id=="b-dl"){st.bdeliver=t.value;return}
+ else if(d.wprice){W(d.wprice).price=Math.max(0,parseFloat(t.value)||0);save();toast("تم حفظ سعر الجملة");return}
+ else if(d.wmoq){W(d.wmoq).moq=Math.max(1,parseInt(t.value)||1);save();toast("تم حفظ أقل كمية");return}
+ else if(d.wstock)W(d.wstock).stock=t.checked;
+ else if(t.id=="cme")st.coMe=t.value;
+ else if(t.id=="c-min")C(st.coMe).minOrder=parseFloat(t.value)||0;
+ else if(["c-about","c-lead","c-bank","c-acct"].includes(t.id)){C(st.coMe)[{"c-about":"about","c-lead":"lead","c-bank":"bank","c-acct":"acct"}[t.id]]=t.value.trim();save();toast("تم الحفظ");return}
  else if(t.id=="f-rc"){const f=t.files&&t.files[0];if(!f)return;const rd=new FileReader();
   rd.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,600/Math.max(im.width,im.height));const c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);st.receipt=c.toDataURL("image/jpeg",0.7);render()};im.onerror=()=>toast("تعذّرت قراءة الصورة");im.src=rd.result};rd.readAsDataURL(f);return}
  else return;
@@ -816,6 +1001,17 @@ document.addEventListener("submit",e=>{
   const id="pl"+Date.now();
   db.places.push({id,type:st.ptype,label:$("#pf-label").value.trim(),area:$("#pf-area").value,addr:$("#pf-addr").value.trim(),contact:$("#pf-contact").value.trim(),phone:$("#pf-phone").value.trim(),lat:r.lat,lng:r.lng,link:r.link});
   st.placeId=id;save();$("#psheet").hidden=true;toast(r.lat!=null||r.link?"تم حفظ الموقع مع اللوكيشن":"تم حفظ الموقع");render();return;
+ }
+ if(e.target.id=="bco"){
+  const c=C(st.bcartCo),ref=($("#b-ref")||{}).value||st.bref||"",dl=($("#b-dl")||{}).value||"";
+  if(st.bpay=="transfer"&&!ref.trim()){toast("اكتب رقم مرجع التحويل");return}
+  const n=Math.max(0,...db.border.map(o=>+o.id.slice(2)))+1;
+  db.border.unshift({id:"W-"+n,cid:c.id,sid:st.me,items:Object.entries(st.bcart).map(([wid,q])=>({wid,q})),status:0,time:"الآن",pay:{transfer:"تحويل بنكي",credit:"آجل 30 يوم",cod:"الدفع عند التسليم"}[st.bpay],ps:{transfer:"pending",credit:"credit",cod:"cod"}[st.bpay],ref:st.bpay=="transfer"?ref.trim():"",deliver:dl});
+  st.bcart={};st.bcartCo=null;st.bref="";st.bdeliver="";st.co=null;st.tab="scompanies";save();toast("تم إرسال طلب الجملة W-"+n+" إلى "+c.short);render();window.scrollTo(0,0);return;
+ }
+ if(e.target.id=="cnp"){
+  db.wproducts.push({id:"w"+Date.now(),cid:st.coMe,name:$("#cn-n").value,desc:$("#cn-d").value,icon:$("#cn-i").value,price:parseFloat($("#cn-p").value)||0,moq:parseInt($("#cn-m").value)||1,stock:true});
+  save();toast("تمت إضافة منتج الجملة");
  }
  if(e.target.id=="np"){
   db.products.push({id:"p"+Date.now(),sid:st.me,name:$("#np-n").value,desc:$("#np-d").value,icon:$("#np-i").value,price:parseFloat($("#np-p").value)||0,stock:true});
