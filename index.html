@@ -183,8 +183,8 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
     <div class="note">عبّ الخطوات وتطلع لك الصهاريج المتوفرة تحت 👇</div>
 
     <div class="step">
-      <label for="area"><span class="num">1</span> وين المنطقة؟</label>
-      <select id="area" class="fld"></select>
+      <label for="gov"><span class="num">1</span> وين المنطقة؟</label>
+      <div class="row2"><select id="gov" class="fld" aria-label="المحافظة"></select><select id="area" class="fld" aria-label="الولاية"></select></div>
     </div>
 
     <div class="step">
@@ -256,9 +256,9 @@ function toast(t){ const e = $('toast'); e.textContent = t; e.classList.add('sho
 const store = { get(k, d){ try{ const v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? d : v; }catch(e){ return d; } }, set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} } };
 
 // Default data (used if drivers.json can't be loaded, e.g. offline)
-let DATA = {"admin":{"name":"سُقيا","whatsapp":""},"areas":["مسقط","مطرح","بوشر","السيب","العامرات","قريات"],"sizes":[{"gal":1000,"label":"صغير"},{"gal":2000,"label":"وسط"},{"gal":3000,"label":"كبير"},{"gal":5000,"label":"كبير جدًا"}],"types":[{"id":"drink","label":"ماي شرب (حلو)"},{"id":"use","label":"ماي استخدام (غسيل، زراعة، بناء)"}],"drivers":[]};
+let DATA = {"admin": {"name": "سُقيا", "whatsapp": ""}, "governorates": {"مسقط": ["مسقط", "مطرح", "بوشر", "السيب", "العامرات", "قريات"], "ظفار": ["صلالة", "طاقة", "مرباط", "رخيوت", "ثمريت", "ضلكوت", "المزيونة", "مقشن", "شليم وجزر الحلانيات", "سدح"], "مسندم": ["خصب", "دبا", "بخا", "مدحاء"], "البريمي": ["البريمي", "محضة", "السنينة"], "الداخلية": ["نزوى", "بهلاء", "منح", "الحمراء", "أدم", "إزكي", "سمائل", "بدبد", "الجبل الأخضر"], "شمال الباطنة": ["صحار", "شناص", "لوى", "صحم", "الخابورة", "السويق"], "جنوب الباطنة": ["الرستاق", "العوابي", "نخل", "وادي المعاول", "بركاء", "المصنعة"], "جنوب الشرقية": ["صور", "الكامل والوافي", "جعلان بني بو حسن", "جعلان بني بو علي", "مصيرة"], "شمال الشرقية": ["إبراء", "المضيبي", "بدية", "القابل", "وادي بني خالد", "دماء والطائيين"], "الظاهرة": ["عبري", "ينقل", "ضنك"], "الوسطى": ["هيماء", "محوت", "الدقم", "الجازر"]}, "sizes": [{"gal": 1000, "label": "صغير"}, {"gal": 2000, "label": "وسط"}, {"gal": 3000, "label": "كبير"}, {"gal": 5000, "label": "كبير جدًا"}], "types": [{"id": "drink", "label": "ماي شرب (حلو)"}, {"id": "use", "label": "ماي استخدام (غسيل، زراعة، بناء)"}], "drivers": []};
 const last = store.get('suqya-last', {});
-const S = { area: last.area || '', gal: last.gal || 2000, type: last.type || 'drink', lat: null, lng: null };
+const S = { gov: last.gov || '', area: last.area || '', gal: last.gal || 2000, type: last.type || 'drink', lat: null, lng: null };
 
 function normPhone(p){
   let d = String(p || '').replace(/[٠-٩]/g, c => '٠١٢٣٤٥٦٧٨٩'.indexOf(c)).replace(/[^\d]/g, '');
@@ -269,10 +269,18 @@ function normPhone(p){
 const omr = n => (Math.round(n * 1000) / 1000).toLocaleString('en', { maximumFractionDigits:3 });
 
 function renderControls(){
+  const G = DATA.governorates || {};
+  const g = $('gov'); g.replaceChildren();
+  const g0 = document.createElement('option'); g0.value = ''; g0.textContent = 'المحافظة…'; g.append(g0);
+  Object.keys(G).forEach(x => { const o = document.createElement('option'); o.value = x; o.textContent = x; g.append(o); });
+  if(!G[S.gov]) S.gov = Object.keys(G).find(k => G[k].includes(S.area)) || '';
+  g.value = S.gov;
   const a = $('area'); a.replaceChildren();
-  const o0 = document.createElement('option'); o0.value = ''; o0.textContent = 'اختار الولاية…'; a.append(o0);
-  DATA.areas.forEach(x => { const o = document.createElement('option'); o.value = x; o.textContent = x; a.append(o); });
-  a.value = DATA.areas.includes(S.area) ? S.area : '';
+  const o0 = document.createElement('option'); o0.value = ''; o0.textContent = S.gov ? 'الولاية…' : 'اختار المحافظة أول'; a.append(o0);
+  (G[S.gov] || []).forEach(x => { const o = document.createElement('option'); o.value = x; o.textContent = x; a.append(o); });
+  a.disabled = !S.gov;
+  if(!(G[S.gov] || []).includes(S.area)) S.area = '';
+  a.value = S.area;
   const sz = $('sizes'); sz.replaceChildren();
   DATA.sizes.forEach(s => {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.setAttribute('aria-pressed', String(s.gal === S.gal));
@@ -288,15 +296,17 @@ function renderControls(){
   });
 }
 
+function covers(d){ return d.areas.includes(S.area) || d.areas.includes('gov:' + S.gov); }
+function areaText(d){ return d.areas.map(a => a.startsWith('gov:') ? 'كل ' + a.slice(4) : a).join('، '); }
 function matches(){
-  return DATA.drivers.filter(d => (!S.area || d.areas.includes(S.area)) && d.types.includes(S.type) && d.prices[String(S.gal)] != null)
+  return DATA.drivers.filter(d => covers(d) && d.types.includes(S.type) && d.prices[String(S.gal)] != null)
     .sort((x, y) => x.prices[String(S.gal)] - y.prices[String(S.gal)]);
 }
 
 function renderDrivers(){
   const box = $('drivers'); box.replaceChildren();
   $('demoBar').hidden = !DATA.drivers.length || !DATA.drivers.every(d => d.demo);
-  if(!S.area){ $('resCount').textContent = ''; const e = document.createElement('div'); e.className = 'empty'; e.textContent = 'اختار الولاية فوق عشان نطلع لك الصهاريج اللي توصل لك 📍'; box.append(e); return; }
+  if(!S.area){ $('resCount').textContent = ''; const e = document.createElement('div'); e.className = 'empty'; e.textContent = 'اختار المحافظة والولاية فوق عشان نطلع لك الصهاريج اللي توصل لك 📍'; box.append(e); return; }
   const list = matches();
   $('resCount').textContent = list.length ? '(' + list.length + ')' : '';
   if(!list.length){
@@ -310,7 +320,7 @@ function renderDrivers(){
     const h = document.createElement('h3'); h.textContent = d.name;
     if(i === 0 && list.length > 1){ const t = document.createElement('span'); t.className = 'tag'; t.textContent = 'الأرخص'; h.append(t); }
     const m = document.createElement('div'); m.className = 'meta';
-    m.textContent = [d.note, 'يغطي: ' + d.areas.join('، ')].filter(Boolean).join(' · ');
+    m.textContent = [d.note, 'يغطي: ' + areaText(d)].filter(Boolean).join(' · ');
     info.append(h, m);
     const pr = document.createElement('div'); pr.className = 'price';
     pr.innerHTML = '<b>' + omr(d.prices[String(S.gal)]) + '</b><span>ر.ع' + (d.demo ? ' · تجريبي' : '') + '</span>';
@@ -329,7 +339,7 @@ function orderText(d){
     '',
     '• الحجم: ' + S.gal.toLocaleString('en') + ' جالون' + (size ? ' (' + size.label + ')' : ''),
     '• النوع: ' + (type ? type.label : ''),
-    '• المنطقة: ' + S.area,
+    '• المنطقة: ' + S.area + ' — محافظة ' + S.gov,
     $('addr').value.trim() ? '• العنوان: ' + $('addr').value.trim() : '',
     S.lat ? '• الموقع: https://maps.google.com/?q=' + S.lat.toFixed(6) + ',' + S.lng.toFixed(6) : '',
     '• الوقت: ' + $('when').value + ' — ' + $('slot').value,
@@ -341,7 +351,7 @@ function orderText(d){
 
 function order(d){
   if(!S.lat && !$('addr').value.trim()){ toast('حدد موقعك أو اكتب العنوان عشان يعرف السايق وين يوصل'); $('addr').focus(); return; }
-  store.set('suqya-last', { area:S.area, gal:S.gal, type:S.type });
+  store.set('suqya-last', { gov:S.gov, area:S.area, gal:S.gal, type:S.type });
   const msg = orderText(d);
   const phone = normPhone(d.phone);
   if(d.demo || phone.length < 10){
@@ -356,6 +366,7 @@ $('closeSheet').onclick = () => $('sheet').classList.remove('show');
 $('sheet').addEventListener('click', e => { if(e.target.id === 'sheet') $('sheet').classList.remove('show'); });
 $('copyMsg').onclick = () => { navigator.clipboard?.writeText($('sheetMsg').textContent).then(() => toast('انسخت ✅'), () => toast('ما قدرت أنسخ')); };
 
+$('gov').onchange = e => { S.gov = e.target.value; S.area = ''; renderControls(); renderDrivers(); };
 $('area').onchange = e => { S.area = e.target.value; renderDrivers(); };
 $('gps').onclick = () => {
   if(!navigator.geolocation){ toast('جهازك ما يدعم تحديد الموقع'); return; }
