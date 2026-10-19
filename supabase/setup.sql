@@ -12,7 +12,7 @@ create table if not exists public.drivers (
   prices      jsonb  not null,
   note        text check (char_length(note) <= 140),
   available   boolean not null default true,
-  status      text not null default 'pending' check (status in ('pending','approved','blocked')),
+  status      text not null default 'approved' check (status in ('pending','approved','blocked')),
   code_hash   text not null
 );
 create table if not exists public.app_admin (
@@ -28,7 +28,7 @@ create or replace function public._clean_prices(p jsonb) returns jsonb
 language sql immutable set search_path = public as $$
   select coalesce(jsonb_object_agg(k, round((v #>> '{}')::numeric, 3)), '{}'::jsonb)
   from jsonb_each(coalesce(p, '{}'::jsonb)) as e(k, v)
-  where k in ('1000','2000','3000','5000')
+  where k in ('650','1000','2000','3000','5000')
     and jsonb_typeof(v) = 'number' and (v #>> '{}')::numeric > 0 and (v #>> '{}')::numeric < 1000
 $$;
 

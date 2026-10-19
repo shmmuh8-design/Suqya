@@ -62,7 +62,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-
 .chip{border:1.5px solid var(--line);background:var(--bg);color:var(--fg);border-radius:12px;padding:9px 12px;font:600 .9rem var(--body);cursor:pointer;min-width:0}
 .chip small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
 .chip[aria-pressed="true"]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 12%,var(--surface));color:var(--brand)}
-.sizes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.sizes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .sizes .chip{text-align:center;padding:10px 4px}
 .sizes .chip b{display:block;font-size:1.05rem}
 .fld{width:100%;min-width:0;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--fg);font:1rem var(--body);padding:11px 12px}
@@ -289,7 +289,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
   <div class="wrapR">
     <div class="head"><h2 id="regTitle">🚛 سجّل كسايق صهريج</h2><button class="x" type="button" id="regClose" aria-label="إغلاق">✕</button></div>
     <div id="vForm">
-    <p class="hint" id="regIntro">عبّ بياناتك، وبعد موافقة الإدارة يظهر صهريجك للزبائن في الولايات اللي تختارها، وطلباتهم توصلك على الواتساب مباشرة.</p>
+    <p class="hint" id="regIntro">عبّ بياناتك، وعلى طول يظهر صهريجك للزبائن في الولايات اللي تختارها، وطلباتهم توصلك على الواتساب مباشرة.</p>
     <button class="linkb" type="button" id="toLogin" hidden>مسجّل من قبل؟ ادخل لحسابك ←</button>
 
     <label class="l" for="rName">الاسم أو اسم المؤسسة</label>
@@ -327,13 +327,12 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
     </div>
 
     <div id="vDone" hidden>
-      <div class="stat approved">✅ تم تسجيلك! صهريجك بيظهر للزبائن أول ما توافق عليه الإدارة.</div>
+      <div class="stat approved">✅ تم تسجيلك! صهريجك صار ظاهر للزبائن في ولاياتك من الحين.</div>
       <p style="font-weight:800;margin:14px 0 0">رمز الدخول حقك:</p>
       <div class="codeBox" id="myCode"></div>
       <p class="hint">⚠️ صوّر الشاشة أو احفظ الرمز. تحتاجه لو غيّرت جوالك أو حذفت التطبيق، عشان تعدّل أسعارك.</p>
       <div class="vstack">
         <button class="btn" type="button" id="copyCode">📋 نسخ الرمز</button>
-        <button class="btn wa" type="button" id="notifyAdmin">💬 بلّغ الإدارة (يسرّع الموافقة)</button>
         <button class="btn ghost" type="button" id="toAcct">حسابي ←</button>
       </div>
     </div>
@@ -374,7 +373,7 @@ async function rpc(fn, args){
 const numPrices = p => Object.fromEntries(Object.entries(p || {}).map(([k, v]) => [k, +v]));
 
 // Default data (used if drivers.json can't be loaded, e.g. offline)
-let DATA = {"admin": {"name": "سُقيا", "whatsapp": "96894005400"}, "governorates": {"مسقط": ["مسقط", "مطرح", "بوشر", "السيب", "العامرات", "قريات"], "ظفار": ["صلالة", "طاقة", "مرباط", "رخيوت", "ثمريت", "ضلكوت", "المزيونة", "مقشن", "شليم وجزر الحلانيات", "سدح"], "مسندم": ["خصب", "دبا", "بخا", "مدحاء"], "البريمي": ["البريمي", "محضة", "السنينة"], "الداخلية": ["نزوى", "بهلاء", "منح", "الحمراء", "أدم", "إزكي", "سمائل", "بدبد", "الجبل الأخضر"], "شمال الباطنة": ["صحار", "شناص", "لوى", "صحم", "الخابورة", "السويق"], "جنوب الباطنة": ["الرستاق", "العوابي", "نخل", "وادي المعاول", "بركاء", "المصنعة"], "جنوب الشرقية": ["صور", "الكامل والوافي", "جعلان بني بو حسن", "جعلان بني بو علي", "مصيرة"], "شمال الشرقية": ["إبراء", "المضيبي", "بدية", "القابل", "وادي بني خالد", "دماء والطائيين"], "الظاهرة": ["عبري", "ينقل", "ضنك"], "الوسطى": ["هيماء", "محوت", "الدقم", "الجازر"]}, "sizes": [{"gal": 1000, "label": "صغير"}, {"gal": 2000, "label": "وسط"}, {"gal": 3000, "label": "كبير"}, {"gal": 5000, "label": "كبير جدًا"}], "types": [{"id": "drink", "label": "ماي شرب (حلو)"}, {"id": "use", "label": "ماي استخدام (غسيل، زراعة، بناء)"}], "drivers": []};
+let DATA = {"admin": {"name": "سُقيا", "whatsapp": "96894005400"}, "governorates": {"مسقط": ["مسقط", "مطرح", "بوشر", "السيب", "العامرات", "قريات"], "ظفار": ["صلالة", "طاقة", "مرباط", "رخيوت", "ثمريت", "ضلكوت", "المزيونة", "مقشن", "شليم وجزر الحلانيات", "سدح"], "مسندم": ["خصب", "دبا", "بخا", "مدحاء"], "البريمي": ["البريمي", "محضة", "السنينة"], "الداخلية": ["نزوى", "بهلاء", "منح", "الحمراء", "أدم", "إزكي", "سمائل", "بدبد", "الجبل الأخضر"], "شمال الباطنة": ["صحار", "شناص", "لوى", "صحم", "الخابورة", "السويق"], "جنوب الباطنة": ["الرستاق", "العوابي", "نخل", "وادي المعاول", "بركاء", "المصنعة"], "جنوب الشرقية": ["صور", "الكامل والوافي", "جعلان بني بو حسن", "جعلان بني بو علي", "مصيرة"], "شمال الشرقية": ["إبراء", "المضيبي", "بدية", "القابل", "وادي بني خالد", "دماء والطائيين"], "الظاهرة": ["عبري", "ينقل", "ضنك"], "الوسطى": ["هيماء", "محوت", "الدقم", "الجازر"]}, "sizes": [{"gal": 650, "label": "صغير جدًا"}, {"gal": 1000, "label": "صغير"}, {"gal": 2000, "label": "وسط"}, {"gal": 3000, "label": "كبير"}, {"gal": 5000, "label": "كبير جدًا"}], "types": [{"id": "drink", "label": "ماي شرب (حلو)"}, {"id": "use", "label": "ماي استخدام (غسيل، زراعة، بناء)"}], "drivers": []};
 const last = store.get('suqya-last', {});
 const S = { gov: last.gov || '', area: last.area || '', gal: last.gal || 2000, type: last.type || 'drink', lat: null, lng: null };
 
@@ -574,10 +573,6 @@ $('loginBtn').onclick = async () => {
   $('loginBtn').disabled = false;
 };
 $('copyCode').onclick = () => navigator.clipboard?.writeText(ME.code).then(() => toast('انسخ الرمز ✅'), () => toast('ما قدرت أنسخ — صوّر الشاشة'));
-$('notifyAdmin').onclick = () => {
-  const admin = normPhone(DATA.admin && DATA.admin.whatsapp); if(admin.length < 10) return;
-  window.location.href = 'https://wa.me/' + admin + '?text=' + encodeURIComponent('السلام عليكم، سجّلت صهريجي في سُقيا باسم «' + (ACCT ? ACCT.name : R.name) + '» ورقم +' + ME.phone + '، أنتظر الموافقة 🚛');
-};
 $('toAcct').onclick = loadAcct;
 async function setAvail(v){
   if(!ACCT || ACCT.available === v) return;
@@ -586,7 +581,7 @@ async function setAvail(v){
 }
 $('aOn').onclick = () => setAvail(true); $('aOff').onclick = () => setAvail(false);
 $('aEdit').onclick = () => { Object.assign(R, { name:ACCT.name, phone:ACCT.phone.replace(/^968/, ''), areas:[...ACCT.areas], types:[...ACCT.types], prices:numPrices(ACCT.prices), note:ACCT.note || '' }); showForm('edit'); };
-$('aShowCode').onclick = () => { $('myCode').textContent = ME.code; view('vDone'); $('regTitle').textContent = '🔑 رمز الدخول'; $('vDone').querySelector('.stat').hidden = true; $('notifyAdmin').hidden = true; };
+$('aShowCode').onclick = () => { $('myCode').textContent = ME.code; view('vDone'); $('regTitle').textContent = '🔑 رمز الدخول'; $('vDone').querySelector('.stat').hidden = true; };
 $('aDelete').onclick = async () => {
   if(!confirm('متأكد تبغى تحذف حسابك؟ بتنحذف كل بياناتك ويختفي صهريجك من التطبيق نهائيًا.')) return;
   try{ await rpc('driver_delete', { p_phone:ME.phone, p_code:ME.code }); ME = null; ACCT = null; store.set('suqya-me', null); toast('انحذف حسابك ✅'); refreshDrivers(); closeReg(); }
@@ -611,8 +606,8 @@ $('regSend').onclick = async () => {
       } else {
         const r = await rpc('register_driver', { ...args, p_phone:phone });
         ME = { phone, code:r.code }; store.set('suqya-me', ME); store.set('suqya-reg', null);
-        ACCT = { name, phone };
-        $('myCode').textContent = r.code; $('vDone').querySelector('.stat').hidden = false; $('notifyAdmin').hidden = false; view('vDone');
+        ACCT = { name, phone }; refreshDrivers();
+        $('myCode').textContent = r.code; $('vDone').querySelector('.stat').hidden = false; view('vDone');
       }
     }catch(e){ toast(e.message); }
     $('regSend').disabled = false;
