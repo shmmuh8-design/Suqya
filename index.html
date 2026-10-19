@@ -627,6 +627,7 @@ $('regSend').onclick = async () => {
 
 if(window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform()) $('oldLink').remove();
 renderControls(); renderDrivers();
+if(/^#(driver|sayeq|سايق)$/.test(decodeURIComponent(location.hash))) openReg();
 let DEMO = [];
 async function refreshDrivers(){
   if(!LIVE) return;
