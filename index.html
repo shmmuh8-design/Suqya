@@ -271,7 +271,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
     <button class="btn" type="button" id="joinBtn">سجّل كسايق صهريج</button>
   </section>
 
-  <footer>سُقيا — اطلب صهريجك<br>© سالم الجابري — مسقط، سلطنة عُمان<br><a href="old/" style="color:var(--muted)">النسخة القديمة من سُقيا</a></footer>
+  <footer>سُقيا — اطلب صهريجك<br>© سالم الجابري — مسقط، سلطنة عُمان<span id="oldLink"><br><a href="old/" style="color:var(--muted)">النسخة القديمة من سُقيا</a></span></footer>
 </div>
 
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
@@ -625,6 +625,7 @@ $('regSend').onclick = async () => {
   openSheet('تسجيلك جاهز ✅', msg, 'انسخ الرسالة وأرسلها لإدارة سُقيا.');
 };
 
+if(window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform()) $('oldLink').remove();
 renderControls(); renderDrivers();
 let DEMO = [];
 async function refreshDrivers(){

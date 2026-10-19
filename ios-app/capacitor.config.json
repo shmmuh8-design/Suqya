@@ -1,0 +1,10 @@
+{
+  "appId": "com.salemaljabri.suqya",
+  "appName": "سُقيا",
+  "webDir": "www",
+  "backgroundColor": "#eef4f3",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#eef4f3"
+  }
+}
