@@ -271,7 +271,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
     <button class="btn" type="button" id="joinBtn">سجّل كسايق صهريج</button>
   </section>
 
-  <footer>سُقيا — اطلب صهريجك<br>© سالم الجابري — مسقط، سلطنة عُمان<span id="oldLink"><br><a href="old/" style="color:var(--muted)">النسخة القديمة من سُقيا</a></span></footer>
+  <footer>سُقيا — اطلب صهريجك<br>© سالم الجابري — مسقط، سلطنة عُمان<br><a href="privacy.html" style="color:var(--muted)">سياسة الخصوصية</a><span id="oldLink"><br><a href="old/" style="color:var(--muted)">النسخة القديمة من سُقيا</a></span></footer>
 </div>
 
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
@@ -349,6 +349,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
         <button class="btn" type="button" id="aEdit">✏️ تعديل بياناتي وأسعاري</button>
         <button class="btn ghost" type="button" id="aShowCode">🔑 عرض رمز الدخول</button>
         <button class="linkb" type="button" id="aLogout">تسجيل خروج من هالجهاز</button>
+        <button class="linkb" type="button" id="aDelete" style="color:#c0392b">🗑️ حذف حسابي نهائيًا</button>
       </div>
     </div>
   </div>
@@ -586,6 +587,11 @@ async function setAvail(v){
 $('aOn').onclick = () => setAvail(true); $('aOff').onclick = () => setAvail(false);
 $('aEdit').onclick = () => { Object.assign(R, { name:ACCT.name, phone:ACCT.phone.replace(/^968/, ''), areas:[...ACCT.areas], types:[...ACCT.types], prices:numPrices(ACCT.prices), note:ACCT.note || '' }); showForm('edit'); };
 $('aShowCode').onclick = () => { $('myCode').textContent = ME.code; view('vDone'); $('regTitle').textContent = '🔑 رمز الدخول'; $('vDone').querySelector('.stat').hidden = true; $('notifyAdmin').hidden = true; };
+$('aDelete').onclick = async () => {
+  if(!confirm('متأكد تبغى تحذف حسابك؟ بتنحذف كل بياناتك ويختفي صهريجك من التطبيق نهائيًا.')) return;
+  try{ await rpc('driver_delete', { p_phone:ME.phone, p_code:ME.code }); ME = null; ACCT = null; store.set('suqya-me', null); toast('انحذف حسابك ✅'); refreshDrivers(); closeReg(); }
+  catch(e){ toast(e.message); }
+};
 $('aLogout').onclick = () => { if(!confirm('متأكد؟ بتحتاج رمز الدخول عشان ترجع تدخل.')) return; ME = null; ACCT = null; store.set('suqya-me', null); showForm('new'); };
 
 $('regSend').onclick = async () => {

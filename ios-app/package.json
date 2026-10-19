@@ -2,15 +2,17 @@
   "name": "suqya-ios",
   "version": "1.0.0",
   "private": true,
-  "description": "سُقيا — تطبيق آيفون (Capacitor)",
+  "description": "سُقيا — تطبيق آيفون وأندرويد (Capacitor)",
   "scripts": {
-    "build": "rm -rf www && mkdir -p www && cp ../index.html ../config.js ../drivers.json ../manifest.json ../icon.svg ../icon-180.png www/",
-    "assets": "capacitor-assets generate --ios --iconBackgroundColor '#0B6E7A' --splashBackgroundColor '#0B6E7A' --splashBackgroundColorDark '#0a3d44'"
+    "build": "rm -rf www && mkdir -p www && cp ../index.html ../privacy.html ../config.js ../drivers.json ../manifest.json ../icon.svg ../icon-180.png www/",
+    "assets": "capacitor-assets generate --ios --iconBackgroundColor '#0B6E7A' --splashBackgroundColor '#0B6E7A' --splashBackgroundColorDark '#0a3d44'",
+    "assets:android": "capacitor-assets generate --android --iconBackgroundColor '#0B6E7A' --splashBackgroundColor '#0B6E7A' --splashBackgroundColorDark '#0a3d44'"
   },
   "dependencies": {
     "@capacitor/core": "^7.0.0",
     "@capacitor/ios": "^7.0.0",
-    "@capacitor/app": "^7.0.0"
+    "@capacitor/app": "^7.0.0",
+    "@capacitor/android": "^7.0.0"
   },
   "devDependencies": {
     "@capacitor/cli": "^7.0.0",

@@ -57,3 +57,53 @@ workflows:
       app_store_connect:
         auth: integration
         submit_to_testflight: false     # تظهر في TestFlight للمختبرين الداخليين بدون مراجعة
+
+  suqya-android:
+    name: سُقيا — أندرويد
+    max_build_duration: 45
+    instance_type: linux_x2
+    working_directory: ios-app
+    environment:
+      android_signing:
+        - suqya_keystore                  # ملف المفتاح اللي ترفعه في Codemagic ← Code signing identities ← Android keystores
+      node: 20
+      java: 17
+    scripts:
+      - name: تثبيت الحزم وتجهيز الملفات
+        script: |
+          npm install
+          npm run build
+      - name: إنشاء مشروع أندرويد
+        script: |
+          [ -d android ] || npx cap add android
+          npm run assets:android
+          npx cap sync android
+      - name: الصلاحيات والإصدار والتوقيع
+        script: |
+          M=android/app/src/main/AndroidManifest.xml
+          grep -q ACCESS_FINE_LOCATION $M || sed -i 's|<uses-permission android:name="android.permission.INTERNET" />|<uses-permission android:name="android.permission.INTERNET" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />|' $M
+          G=android/app/build.gradle
+          sed -i "s/versionCode [0-9]*/versionCode $((BUILD_NUMBER + 1))/" $G
+          sed -i 's/versionName "[^"]*"/versionName "1.0"/' $G
+          cat >> $G <<'GRADLE'
+
+          android {
+              signingConfigs {
+                  release {
+                      storeFile file(System.getenv("CM_KEYSTORE_PATH"))
+                      storePassword System.getenv("CM_KEYSTORE_PASSWORD")
+                      keyAlias System.getenv("CM_KEY_ALIAS")
+                      keyPassword System.getenv("CM_KEY_PASSWORD")
+                  }
+              }
+              buildTypes { release { signingConfig signingConfigs.release } }
+          }
+          GRADLE
+      - name: بناء ملف AAB
+        script: |
+          cd android
+          chmod +x gradlew
+          ./gradlew bundleRelease
+    artifacts:
+      - ios-app/android/app/build/outputs/bundle/release/*.aab
+      - android/app/build/outputs/bundle/release/*.aab

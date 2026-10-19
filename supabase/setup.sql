@@ -160,3 +160,13 @@ grant execute on function
   public.admin_claim(text), public.admin_state(),
   public.admin_list(text), public.admin_set_status(text, uuid, text), public.admin_delete(text, uuid)
 to anon, authenticated;
+
+-- driver: delete own account
+create or replace function public.driver_delete(p_phone text, p_code text)
+returns json language plpgsql security definer set search_path = public as $$
+declare d drivers := _driver(p_phone, p_code);
+begin
+  delete from drivers where id = d.id;
+  return json_build_object('ok', true);
+end $$;
+grant execute on function public.driver_delete(text, text) to anon, authenticated;
