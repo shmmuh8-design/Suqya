@@ -110,6 +110,21 @@ footer{text-align:center;font-size:.78rem;color:var(--muted);line-height:1.8}
 .prow{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center}
 .prow .fld{padding:9px 12px}
 .prow .fld:disabled{opacity:.45}
+.drv.busy{opacity:.6}
+.drv.busy .btn{background:var(--line);color:var(--muted);cursor:not-allowed}
+.tag.busy{background:#eceff1;color:#5b6b70}
+.linkb{border:0;background:none;color:var(--brand);font:700 .92rem var(--body);text-decoration:underline;cursor:pointer;padding:6px 0}
+.codeBox{font:800 2rem/1.2 "Courier New",monospace;letter-spacing:.18em;text-align:center;background:var(--surface);border:2px dashed var(--brand);border-radius:16px;padding:16px;margin:12px 0;direction:ltr;user-select:all}
+.stat{display:flex;align-items:center;gap:10px;border-radius:14px;padding:12px 14px;font-weight:700;line-height:1.6;margin:10px 0}
+.stat.pending{background:#fff4dc;color:#7a5410}.stat.approved{background:#e2f6ea;color:#17613a}.stat.blocked{background:#fde4e4;color:#8a1f1f}
+.avail{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 4px}
+.avail button{border:2px solid var(--line);background:var(--surface);color:var(--fg);border-radius:14px;padding:14px 8px;font:800 1rem var(--body);cursor:pointer}
+.avail button[aria-pressed="true"].on{border-color:#1f9d55;background:#e2f6ea;color:#17613a}
+.avail button[aria-pressed="true"].off{border-color:#c0392b;background:#fde4e4;color:#8a1f1f}
+.sum{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;line-height:1.9;font-size:.92rem}
+.vstack{display:grid;gap:8px;margin-top:14px}
+.vstack .btn{justify-content:center;width:100%}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .stat.pending{background:#3a2f12;color:#ffd98a}:root:not([data-theme="light"]) .stat.approved{background:#12331f;color:#8fe0ad}:root:not([data-theme="light"]) .stat.blocked{background:#3a1515;color:#ffaaaa}}
 /* order preview sheet */
 .sheet{position:fixed;inset:0;background:rgba(5,20,24,.55);display:none;align-items:flex-end;justify-content:center;z-index:30}
 .sheet.show{display:flex}
@@ -273,7 +288,9 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 <div class="reg" id="reg" role="dialog" aria-modal="true" aria-labelledby="regTitle">
   <div class="wrapR">
     <div class="head"><h2 id="regTitle">🚛 سجّل كسايق صهريج</h2><button class="x" type="button" id="regClose" aria-label="إغلاق">✕</button></div>
-    <p class="hint">عبّ بياناتك، وتوصل لإدارة سُقيا على الواتساب. بعد المراجعة يظهر صهريجك للزبائن في الولايات اللي تختارها، وطلباتهم توصلك على رقمك مباشرة.</p>
+    <div id="vForm">
+    <p class="hint" id="regIntro">عبّ بياناتك، وبعد موافقة الإدارة يظهر صهريجك للزبائن في الولايات اللي تختارها، وطلباتهم توصلك على الواتساب مباشرة.</p>
+    <button class="linkb" type="button" id="toLogin" hidden>مسجّل من قبل؟ ادخل لحسابك ←</button>
 
     <label class="l" for="rName">الاسم أو اسم المؤسسة</label>
     <input class="fld" id="rName" autocomplete="name" placeholder="مثال: أبو سعيد لنقل المياه">
@@ -296,14 +313,64 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
     <input class="fld" id="rNote" placeholder="مثال: متوفر من 6 الصبح لين 10 الليل">
 
     <button class="btn" type="button" id="regSend" style="width:100%;justify-content:center;margin-top:20px">📤 أرسل التسجيل</button>
+    <button class="linkb" type="button" id="cancelEdit" hidden style="display:block;margin:10px auto 0">إلغاء التعديل</button>
+    </div>
+
+    <div id="vLogin" hidden>
+      <p class="hint">اكتب رقمك ورمز الدخول اللي طلع لك وقت التسجيل.</p>
+      <label class="l" for="lPhone">رقم الواتساب</label>
+      <input class="fld" id="lPhone" type="tel" inputmode="tel" dir="ltr" placeholder="9XXXXXXX">
+      <label class="l" for="lCode">رمز الدخول</label>
+      <input class="fld" id="lCode" dir="ltr" autocapitalize="characters" autocomplete="one-time-code" placeholder="مثال: 7F3A9C21" style="letter-spacing:.12em">
+      <button class="btn" type="button" id="loginBtn" style="width:100%;justify-content:center;margin-top:18px">دخول</button>
+      <p class="hint">نسيت الرمز؟ تواصل مع إدارة سُقيا. <button class="linkb" type="button" id="toNew">سجّل صهريج جديد</button></p>
+    </div>
+
+    <div id="vDone" hidden>
+      <div class="stat approved">✅ تم تسجيلك! صهريجك بيظهر للزبائن أول ما توافق عليه الإدارة.</div>
+      <p style="font-weight:800;margin:14px 0 0">رمز الدخول حقك:</p>
+      <div class="codeBox" id="myCode"></div>
+      <p class="hint">⚠️ صوّر الشاشة أو احفظ الرمز. تحتاجه لو غيّرت جوالك أو حذفت التطبيق، عشان تعدّل أسعارك.</p>
+      <div class="vstack">
+        <button class="btn" type="button" id="copyCode">📋 نسخ الرمز</button>
+        <button class="btn wa" type="button" id="notifyAdmin">💬 بلّغ الإدارة (يسرّع الموافقة)</button>
+        <button class="btn ghost" type="button" id="toAcct">حسابي ←</button>
+      </div>
+    </div>
+
+    <div id="vAcct" hidden>
+      <div class="stat" id="aStat"></div>
+      <label class="l">حالتك الحين</label>
+      <div class="avail"><button type="button" class="on" id="aOn">🟢 متوفر</button><button type="button" class="off" id="aOff">🔴 مشغول</button></div>
+      <p class="hint">لما تكون «مشغول» يظهر صهريجك للزبائن بس ما يقدرون يطلبون منك.</p>
+      <label class="l">بياناتي</label>
+      <div class="sum" id="aSum"></div>
+      <div class="vstack">
+        <button class="btn" type="button" id="aEdit">✏️ تعديل بياناتي وأسعاري</button>
+        <button class="btn ghost" type="button" id="aShowCode">🔑 عرض رمز الدخول</button>
+        <button class="linkb" type="button" id="aLogout">تسجيل خروج من هالجهاز</button>
+      </div>
+    </div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
 
+<script src="config.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 function toast(t){ const e = $('toast'); e.textContent = t; e.classList.add('show'); clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove('show'), 2600); }
 const store = { get(k, d){ try{ const v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? d : v; }catch(e){ return d; } }, set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} } };
+
+const SB = window.SUQYA_SB || {}, LIVE = !!(SB.url && SB.key);
+async function rpc(fn, args){
+  let r;
+  try{ r = await fetch(SB.url + '/rest/v1/rpc/' + fn, { method:'POST', headers:{ apikey:SB.key, 'Content-Type':'application/json' }, body:JSON.stringify(args || {}) }); }
+  catch(e){ throw new Error('ما فيه اتصال بالإنترنت، حاول مرة ثانية'); }
+  const t = await r.text(); let j = null; try{ j = t ? JSON.parse(t) : null; }catch(e){}
+  if(!r.ok) throw new Error((j && j.message) || 'صار خطأ، حاول مرة ثانية');
+  return j;
+}
+const numPrices = p => Object.fromEntries(Object.entries(p || {}).map(([k, v]) => [k, +v]));
 
 // Default data (used if drivers.json can't be loaded, e.g. offline)
 let DATA = {"admin": {"name": "سُقيا", "whatsapp": "96894005400"}, "governorates": {"مسقط": ["مسقط", "مطرح", "بوشر", "السيب", "العامرات", "قريات"], "ظفار": ["صلالة", "طاقة", "مرباط", "رخيوت", "ثمريت", "ضلكوت", "المزيونة", "مقشن", "شليم وجزر الحلانيات", "سدح"], "مسندم": ["خصب", "دبا", "بخا", "مدحاء"], "البريمي": ["البريمي", "محضة", "السنينة"], "الداخلية": ["نزوى", "بهلاء", "منح", "الحمراء", "أدم", "إزكي", "سمائل", "بدبد", "الجبل الأخضر"], "شمال الباطنة": ["صحار", "شناص", "لوى", "صحم", "الخابورة", "السويق"], "جنوب الباطنة": ["الرستاق", "العوابي", "نخل", "وادي المعاول", "بركاء", "المصنعة"], "جنوب الشرقية": ["صور", "الكامل والوافي", "جعلان بني بو حسن", "جعلان بني بو علي", "مصيرة"], "شمال الشرقية": ["إبراء", "المضيبي", "بدية", "القابل", "وادي بني خالد", "دماء والطائيين"], "الظاهرة": ["عبري", "ينقل", "ضنك"], "الوسطى": ["هيماء", "محوت", "الدقم", "الجازر"]}, "sizes": [{"gal": 1000, "label": "صغير"}, {"gal": 2000, "label": "وسط"}, {"gal": 3000, "label": "كبير"}, {"gal": 5000, "label": "كبير جدًا"}], "types": [{"id": "drink", "label": "ماي شرب (حلو)"}, {"id": "use", "label": "ماي استخدام (غسيل، زراعة، بناء)"}], "drivers": []};
@@ -350,7 +417,7 @@ function covers(d){ return d.areas.includes(S.area) || d.areas.includes('gov:' +
 function areaText(d){ return d.areas.map(a => a.startsWith('gov:') ? 'كل ' + a.slice(4) : a).join('، '); }
 function matches(){
   return DATA.drivers.filter(d => covers(d) && d.types.includes(S.type) && d.prices[String(S.gal)] != null)
-    .sort((x, y) => x.prices[String(S.gal)] - y.prices[String(S.gal)]);
+    .sort((x, y) => (y.available !== false) - (x.available !== false) || x.prices[String(S.gal)] - y.prices[String(S.gal)]);
 }
 
 function renderDrivers(){
@@ -365,10 +432,12 @@ function renderDrivers(){
     e.querySelector('b').textContent = S.area; box.append(e); return;
   }
   list.forEach((d, i) => {
-    const el = document.createElement('article'); el.className = 'drv';
+    const busy = d.available === false;
+    const el = document.createElement('article'); el.className = 'drv' + (busy ? ' busy' : '');
     const info = document.createElement('div');
     const h = document.createElement('h3'); h.textContent = d.name;
-    if(i === 0 && list.length > 1){ const t = document.createElement('span'); t.className = 'tag'; t.textContent = 'الأرخص'; h.append(t); }
+    if(busy){ const t = document.createElement('span'); t.className = 'tag busy'; t.textContent = 'مشغول الحين'; h.append(t); }
+    else if(i === 0 && list.filter(x => x.available !== false).length > 1){ const t = document.createElement('span'); t.className = 'tag'; t.textContent = 'الأرخص'; h.append(t); }
     const m = document.createElement('div'); m.className = 'meta';
     m.textContent = [d.note, 'يغطي: ' + areaText(d)].filter(Boolean).join(' · ');
     info.append(h, m);
@@ -376,7 +445,7 @@ function renderDrivers(){
     pr.innerHTML = '<b>' + omr(d.prices[String(S.gal)]) + '</b><span>ر.ع' + (d.demo ? ' · تجريبي' : '') + '</span>';
     const go = document.createElement('div'); go.className = 'go';
     const b = document.createElement('button'); b.type = 'button'; b.className = 'btn wa'; b.innerHTML = '💬 اطلب من الواتساب';
-    b.onclick = () => order(d);
+    if(busy){ b.disabled = true; b.textContent = '⏳ مشغول الحين — جرّب بعدين'; } else b.onclick = () => order(d);
     go.append(b);
     el.append(info, pr, go); box.append(el);
   });
@@ -428,8 +497,10 @@ $('gps').onclick = () => {
 };
 
 const R = store.get('suqya-reg', { name:'', phone:'', areas:[], types:['drink'], prices:{}, note:'' });
+let ME = store.get('suqya-me', null), ACCT = null, MODE = 'new';
 function renderReg(){
   $('rName').value = R.name; $('rPhone').value = R.phone; $('rNote').value = R.note;
+  $('rPhone').disabled = MODE === 'edit';
   const G = DATA.governorates || {}, box = $('rGovs'); box.replaceChildren();
   Object.keys(G).forEach(g => {
     const d = document.createElement('details'), sm = document.createElement('summary'), cnt = document.createElement('span'); cnt.className = 'n';
@@ -438,37 +509,109 @@ function renderReg(){
     const mk = (val, text, all) => { const l = document.createElement('label'); l.className = 'ck' + (all ? ' all' : ''); const i = document.createElement('input'); i.type = 'checkbox'; i.value = val; i.checked = R.areas.includes(val); l.append(i, document.createTextNode(text)); wl.append(l); return i; };
     const all = mk('gov:' + g, 'كل المحافظة', true);
     const ws = G[g].map(w => mk(w, w));
-    const paint = () => { ws.forEach(i => { i.disabled = all.checked; i.parentNode.style.opacity = all.checked ? .5 : 1; }); const k = all.checked ? 'الكل' : ws.filter(i => i.checked).length; cnt.textContent = k ? (k === 'الكل' ? '✓ الكل' : '✓ ' + k) : ''; if(k) d.open = d.open || false; };
+    const paint = () => { ws.forEach(i => { i.disabled = all.checked; i.parentNode.style.opacity = all.checked ? .5 : 1; }); const k = all.checked ? 'الكل' : ws.filter(i => i.checked).length; cnt.textContent = k ? '✓ ' + k : ''; };
     wl.addEventListener('change', e => {
       const v = e.target.value; R.areas = R.areas.filter(a => a !== v); if(e.target.checked) R.areas.push(v);
       if(all.checked) R.areas = R.areas.filter(a => !G[g].includes(a));
-      paint(); store.set('suqya-reg', R);
+      paint(); if(MODE === 'new') store.set('suqya-reg', R);
     });
     paint(); d.append(sm, wl); box.append(d);
   });
   const ty = $('rTypes'); ty.replaceChildren();
   DATA.types.forEach(t => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = t.label; b.setAttribute('aria-pressed', R.types.includes(t.id));
-    b.onclick = () => { R.types = R.types.includes(t.id) ? R.types.filter(x => x !== t.id) : R.types.concat(t.id); b.setAttribute('aria-pressed', R.types.includes(t.id)); store.set('suqya-reg', R); }; ty.append(b); });
+    b.onclick = () => { R.types = R.types.includes(t.id) ? R.types.filter(x => x !== t.id) : R.types.concat(t.id); b.setAttribute('aria-pressed', R.types.includes(t.id)); if(MODE === 'new') store.set('suqya-reg', R); }; ty.append(b); });
   const pr = $('rPrices'); pr.replaceChildren();
   DATA.sizes.forEach(z => { const k = String(z.gal), row = document.createElement('div'); row.className = 'prow';
     const l = document.createElement('label'); l.className = 'ck'; const c = document.createElement('input'); c.type = 'checkbox'; c.checked = k in R.prices; l.append(c, document.createTextNode(z.gal.toLocaleString('en') + ' جالون'));
     const i = document.createElement('input'); i.className = 'fld'; i.type = 'number'; i.inputMode = 'decimal'; i.min = '0'; i.step = '0.5'; i.placeholder = 'السعر'; i.dir = 'ltr'; i.value = R.prices[k] ?? ''; i.disabled = !c.checked;
-    c.onchange = () => { i.disabled = !c.checked; if(c.checked){ R.prices[k] = i.value === '' ? null : +i.value; i.focus(); } else delete R.prices[k]; store.set('suqya-reg', R); };
-    i.oninput = () => { R.prices[k] = i.value === '' ? null : +i.value; store.set('suqya-reg', R); };
+    c.onchange = () => { i.disabled = !c.checked; if(c.checked){ R.prices[k] = i.value === '' ? null : +i.value; i.focus(); } else delete R.prices[k]; if(MODE === 'new') store.set('suqya-reg', R); };
+    i.oninput = () => { R.prices[k] = i.value === '' ? null : +i.value; if(MODE === 'new') store.set('suqya-reg', R); };
     row.append(l, i); pr.append(row); });
+  $('regTitle').textContent = MODE === 'edit' ? '✏️ تعديل بياناتي' : '🚛 سجّل كسايق صهريج';
+  $('regSend').textContent = MODE === 'edit' ? '💾 حفظ التعديلات' : '📤 أرسل التسجيل';
+  $('regIntro').hidden = MODE === 'edit'; $('toLogin').hidden = !LIVE || MODE === 'edit'; $('cancelEdit').hidden = MODE !== 'edit';
 }
-['rName','rPhone','rNote'].forEach(id => $(id).addEventListener('input', e => { R[{rName:'name',rPhone:'phone',rNote:'note'}[id]] = e.target.value; store.set('suqya-reg', R); }));
-function openReg(){ renderReg(); $('reg').classList.add('show'); document.body.style.overflow = 'hidden'; $('reg').scrollTop = 0; }
+['rName','rPhone','rNote'].forEach(id => $(id).addEventListener('input', e => { R[{rName:'name',rPhone:'phone',rNote:'note'}[id]] = e.target.value; if(MODE === 'new') store.set('suqya-reg', R); }));
+
+function view(v){ ['vForm','vLogin','vDone','vAcct'].forEach(x => $(x).hidden = x !== v); $('reg').scrollTop = 0;
+  if(v === 'vLogin') $('regTitle').textContent = '🔑 دخول السايق';
+  if(v === 'vDone') $('regTitle').textContent = '🎉 أهلًا فيك في سُقيا';
+  if(v === 'vAcct') $('regTitle').textContent = '🚛 حسابي'; }
+function showForm(mode){ MODE = mode; renderReg(); view('vForm'); }
+function paintAcct(){
+  const a = ACCT, st = $('aStat');
+  st.className = 'stat ' + a.status;
+  st.textContent = { pending:'⏳ تسجيلك قيد المراجعة — بيظهر صهريجك للزبائن أول ما توافق الإدارة.', approved:'✅ حسابك فعّال، وصهريجك ظاهر للزبائن.', blocked:'⛔ حسابك موقوف — تواصل مع إدارة سُقيا.' }[a.status] || a.status;
+  $('aOn').setAttribute('aria-pressed', a.available); $('aOff').setAttribute('aria-pressed', !a.available);
+  const tl = id => (DATA.types.find(t => t.id === id) || {}).label || id;
+  const sum = $('aSum'); sum.replaceChildren();
+  [['الاسم', a.name], ['الرقم', '\u2066+' + a.phone + '\u2069'], ['المناطق', areaText(a)], ['نوع الماي', a.types.map(tl).join(' + ')],
+   ['الأسعار', Object.keys(a.prices).sort((x, y) => x - y).map(k => (+k).toLocaleString('en') + ' جالون: ' + omr(+a.prices[k]) + ' ر.ع').join(' · ')],
+   a.note ? ['ملاحظة', a.note] : null].filter(Boolean).forEach(([k, v]) => { const d = document.createElement('div'); const b = document.createElement('b'); b.textContent = k + ': '; d.append(b, document.createTextNode(v)); sum.append(d); });
+}
+async function loadAcct(){
+  view('vAcct'); $('aStat').className = 'stat'; $('aStat').textContent = 'جاري التحميل…'; $('aSum').textContent = '';
+  try{ ACCT = await rpc('driver_get', { p_phone:ME.phone, p_code:ME.code }); paintAcct(); }
+  catch(e){ toast(e.message); if(/غلط/.test(e.message)){ ME = null; store.set('suqya-me', null); view('vLogin'); } }
+}
+function openReg(){
+  if(LIVE && ME) loadAcct(); else showForm('new');
+  $('reg').classList.add('show'); document.body.style.overflow = 'hidden';
+}
 function closeReg(){ $('reg').classList.remove('show'); document.body.style.overflow = ''; }
 $('regClose').onclick = closeReg;
 $('joinBtn').onclick = openReg; $('drvTop').onclick = openReg;
-$('regSend').onclick = () => {
+$('toLogin').onclick = () => { $('lPhone').value = R.phone || ''; view('vLogin'); };
+$('toNew').onclick = () => showForm('new');
+$('cancelEdit').onclick = () => { view('vAcct'); paintAcct(); };
+$('loginBtn').onclick = async () => {
+  const phone = normPhone($('lPhone').value), code = $('lCode').value.trim().toUpperCase();
+  if(phone.length < 11 || code.length < 6){ toast('اكتب الرقم ورمز الدخول'); return; }
+  $('loginBtn').disabled = true;
+  try{ ACCT = await rpc('driver_get', { p_phone:phone, p_code:code }); ME = { phone, code }; store.set('suqya-me', ME); view('vAcct'); paintAcct(); }
+  catch(e){ toast(e.message); }
+  $('loginBtn').disabled = false;
+};
+$('copyCode').onclick = () => navigator.clipboard?.writeText(ME.code).then(() => toast('انسخ الرمز ✅'), () => toast('ما قدرت أنسخ — صوّر الشاشة'));
+$('notifyAdmin').onclick = () => {
+  const admin = normPhone(DATA.admin && DATA.admin.whatsapp); if(admin.length < 10) return;
+  window.location.href = 'https://wa.me/' + admin + '?text=' + encodeURIComponent('السلام عليكم، سجّلت صهريجي في سُقيا باسم «' + (ACCT ? ACCT.name : R.name) + '» ورقم +' + ME.phone + '، أنتظر الموافقة 🚛');
+};
+$('toAcct').onclick = loadAcct;
+async function setAvail(v){
+  if(!ACCT || ACCT.available === v) return;
+  try{ ACCT = await rpc('driver_set_available', { p_phone:ME.phone, p_code:ME.code, p_available:v }); paintAcct(); toast(v ? 'صرت متوفر 🟢' : 'صرت مشغول 🔴'); refreshDrivers(); }
+  catch(e){ toast(e.message); }
+}
+$('aOn').onclick = () => setAvail(true); $('aOff').onclick = () => setAvail(false);
+$('aEdit').onclick = () => { Object.assign(R, { name:ACCT.name, phone:ACCT.phone.replace(/^968/, ''), areas:[...ACCT.areas], types:[...ACCT.types], prices:numPrices(ACCT.prices), note:ACCT.note || '' }); showForm('edit'); };
+$('aShowCode').onclick = () => { $('myCode').textContent = ME.code; view('vDone'); $('regTitle').textContent = '🔑 رمز الدخول'; $('vDone').querySelector('.stat').hidden = true; $('notifyAdmin').hidden = true; };
+$('aLogout').onclick = () => { if(!confirm('متأكد؟ بتحتاج رمز الدخول عشان ترجع تدخل.')) return; ME = null; ACCT = null; store.set('suqya-me', null); showForm('new'); };
+
+$('regSend').onclick = async () => {
   const name = R.name.trim(), phone = normPhone(R.phone), sizes = Object.keys(R.prices);
   if(!name){ toast('اكتب اسمك أول'); $('rName').focus(); return; }
   if(phone.length < 11){ toast('اكتب رقم واتساب صحيح'); $('rPhone').focus(); return; }
   if(!R.areas.length){ toast('اختار ولاية وحدة على الأقل'); return; }
   if(!R.types.length){ toast('اختار نوع الماي'); return; }
   if(!sizes.length || sizes.some(k => !(R.prices[k] > 0))){ toast('علّم حجم واحد على الأقل واكتب سعره'); return; }
+  if(LIVE){
+    const args = { p_name:name, p_areas:R.areas, p_types:R.types, p_prices:R.prices, p_note:R.note.trim() };
+    $('regSend').disabled = true;
+    try{
+      if(MODE === 'edit'){
+        ACCT = await rpc('driver_update', { ...args, p_phone:ME.phone, p_code:ME.code, p_available:ACCT.available });
+        toast('انحفظت التعديلات ✅'); view('vAcct'); paintAcct(); refreshDrivers();
+      } else {
+        const r = await rpc('register_driver', { ...args, p_phone:phone });
+        ME = { phone, code:r.code }; store.set('suqya-me', ME); store.set('suqya-reg', null);
+        ACCT = { name, phone };
+        $('myCode').textContent = r.code; $('vDone').querySelector('.stat').hidden = false; $('notifyAdmin').hidden = false; view('vDone');
+      }
+    }catch(e){ toast(e.message); }
+    $('regSend').disabled = false;
+    return;
+  }
   const tl = id => (DATA.types.find(t => t.id === id) || {}).label || id;
   const lines = ['السلام عليكم، أبي أسجّل صهريجي في سُقيا 🚛', '',
     '• الاسم: ' + name, '• الواتساب: +' + phone,
@@ -476,14 +619,24 @@ $('regSend').onclick = () => {
     '• نوع الماي: ' + R.types.map(tl).join(' + '),
     '• الأسعار:', ...sizes.sort((a, b) => a - b).map(k => '   ' + (+k).toLocaleString('en') + ' جالون = ' + R.prices[k] + ' ر.ع'),
     R.note.trim() ? '• ملاحظة: ' + R.note.trim() : ''];
-  const msg = lines.filter(Boolean).join('\n').replace('سُقيا 🚛\n', 'سُقيا 🚛\n\n');
+  const msg = lines.filter((x, i) => x !== '' || i === 1).join('\n');
   const admin = normPhone(DATA.admin && DATA.admin.whatsapp);
   if(admin.length >= 10){ window.location.href = 'https://wa.me/' + admin + '?text=' + encodeURIComponent(msg); return; }
-  openSheet('تسجيلك جاهز ✅', msg, 'رقم إدارة سُقيا ما انضاف للحين — انسخ الرسالة وأرسلها لهم.');
+  openSheet('تسجيلك جاهز ✅', msg, 'انسخ الرسالة وأرسلها لإدارة سُقيا.');
 };
 
 renderControls(); renderDrivers();
-fetch('drivers.json', { cache:'no-store' }).then(r => r.ok ? r.json() : null).then(j => { if(j && Array.isArray(j.drivers)){ DATA = j; renderControls(); renderDrivers(); } }).catch(() => {});
+let DEMO = [];
+async function refreshDrivers(){
+  if(!LIVE) return;
+  try{
+    const rows = await rpc('list_drivers');
+    const real = (rows || []).map(r => ({ ...r, prices:numPrices(r.prices) }));
+    DATA.drivers = real.length ? real : DEMO;
+    renderDrivers();
+  }catch(e){}
+}
+fetch('drivers.json', { cache:'no-store' }).then(r => r.ok ? r.json() : null).then(j => { if(j && Array.isArray(j.drivers)){ DATA = j; DEMO = j.drivers; renderControls(); renderDrivers(); } }).catch(() => {}).finally(refreshDrivers);
 </script>
 </body>
 </html>
