@@ -113,6 +113,10 @@ footer{text-align:center;font-size:.78rem;color:var(--muted);line-height:1.8}
 .drv.busy{opacity:.6}
 .drv.busy .btn{background:var(--line);color:var(--muted);cursor:not-allowed}
 .tag.busy{background:#eceff1;color:#5b6b70}
+.drv .mod{grid-column:1 / -1;display:flex;gap:16px;justify-content:flex-end;margin-top:-2px}
+.drv .mod button{background:none;border:0;padding:4px 0;font:inherit;font-size:.78rem;color:var(--muted);cursor:pointer;text-decoration:underline}
+.hidnote{font-size:.8rem;color:var(--muted);text-align:center;margin-top:8px}
+.hidnote button{background:none;border:0;font:inherit;color:var(--brand);text-decoration:underline;cursor:pointer}
 .linkb{border:0;background:none;color:var(--brand);font:700 .92rem var(--body);text-decoration:underline;cursor:pointer;padding:6px 0}
 .codeBox{font:800 2rem/1.2 "Courier New",monospace;letter-spacing:.18em;text-align:center;background:var(--surface);border:2px dashed var(--brand);border-radius:16px;padding:16px;margin:12px 0;direction:ltr;user-select:all}
 .stat{display:flex;align-items:center;gap:10px;border-radius:14px;padding:12px 14px;font-weight:700;line-height:1.6;margin:10px 0}
@@ -312,7 +316,8 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
     <label class="l" for="rNote">ملاحظة (اختياري)</label>
     <input class="fld" id="rNote" placeholder="مثال: متوفر من 6 الصبح لين 10 الليل">
 
-    <button class="btn" type="button" id="regSend" style="width:100%;justify-content:center;margin-top:20px">📤 أرسل التسجيل</button>
+    <p class="hint" style="font-size:.78rem;color:var(--muted);margin:16px 0 0;line-height:1.7">بالتسجيل توافق إن بياناتك صحيحة وما فيها أي محتوى مسيء أو مضلل. أي سايق يُبلَّغ عنه ويثبت عليه مخالفة يُحذف من التطبيق خلال 24 ساعة.</p>
+    <button class="btn" type="button" id="regSend" style="width:100%;justify-content:center;margin-top:12px">📤 أرسل التسجيل</button>
     <button class="linkb" type="button" id="cancelEdit" hidden style="display:block;margin:10px auto 0">إلغاء التعديل</button>
     </div>
 
@@ -415,8 +420,22 @@ function renderControls(){
 
 function covers(d){ return d.areas.includes(S.area) || d.areas.includes('gov:' + S.gov); }
 function areaText(d){ return d.areas.map(a => a.startsWith('gov:') ? 'كل ' + a.slice(4) : a).join('، '); }
+function dkey(d){ return String(d.id || d.whatsapp || d.phone || d.name); }
+function hiddenSet(){ return new Set(store.get('suqya_hidden', [])); }
+function hideDriver(d){
+  if(!confirm('إخفاء «' + d.name + '»؟ ما بيطلع لك في القائمة بعد كذا.')) return;
+  const h = hiddenSet(); h.add(dkey(d)); store.set('suqya_hidden', [...h]); renderDrivers();
+}
+function reportDriver(d){
+  const why = prompt('ليش تبلّغ عن «' + d.name + '»؟ (محتوى غير لائق، رقم غلط، احتيال…)');
+  if(why == null) return;
+  const msg = ['🚩 بلاغ عن سايق في سُقيا', '', '• السايق: ' + d.name, '• المعرّف: ' + dkey(d), '• السبب: ' + (why.trim() || 'بدون تفاصيل')].join('\n');
+  const admin = normPhone(DATA.admin && DATA.admin.whatsapp);
+  window.location.href = 'https://wa.me/' + admin + '?text=' + encodeURIComponent(msg);
+}
 function matches(){
-  return DATA.drivers.filter(d => covers(d) && d.types.includes(S.type) && d.prices[String(S.gal)] != null)
+  const hid = hiddenSet();
+  return DATA.drivers.filter(d => !hid.has(dkey(d)) && covers(d) && d.types.includes(S.type) && d.prices[String(S.gal)] != null)
     .sort((x, y) => (y.available !== false) - (x.available !== false) || x.prices[String(S.gal)] - y.prices[String(S.gal)]);
 }
 
@@ -429,7 +448,7 @@ function renderDrivers(){
   if(!list.length){
     const e = document.createElement('div'); e.className = 'empty';
     e.innerHTML = 'ما فيه صهريج مسجّل في <b></b> لهالحجم والنوع حاليًا.<br>جرّب حجم ثاني، أو ارجع بعدين، قاعدين نضيف سوّاقين كل يوم 🚛';
-    e.querySelector('b').textContent = S.area; box.append(e); return;
+    e.querySelector('b').textContent = S.area; box.append(e); hidNote(box); return;
   }
   list.forEach((d, i) => {
     const busy = d.available === false;
@@ -447,8 +466,17 @@ function renderDrivers(){
     const b = document.createElement('button'); b.type = 'button'; b.className = 'btn wa'; b.innerHTML = '💬 اطلب من الواتساب';
     if(busy){ b.disabled = true; b.textContent = '⏳ مشغول الحين — جرّب بعدين'; } else b.onclick = () => order(d);
     go.append(b);
-    el.append(info, pr, go); box.append(el);
+    const mod = document.createElement('div'); mod.className = 'mod';
+    const rp = document.createElement('button'); rp.type = 'button'; rp.textContent = '🚩 إبلاغ'; rp.onclick = () => reportDriver(d);
+    const hd = document.createElement('button'); hd.type = 'button'; hd.textContent = '🚫 إخفاء'; hd.onclick = () => hideDriver(d);
+    mod.append(rp, hd);
+    el.append(info, pr, go, mod); box.append(el);
   });
+  hidNote(box);
+}
+function hidNote(box){
+  const nh = store.get('suqya_hidden', []).length;
+  if(nh){ const n = document.createElement('div'); n.className = 'hidnote'; n.innerHTML = 'مخفي عندك ' + nh + ' سايق · <button type="button">إظهارهم</button>'; n.querySelector('button').onclick = () => { store.set('suqya_hidden', []); renderDrivers(); }; box.append(n); }
 }
 
 function orderText(d){
