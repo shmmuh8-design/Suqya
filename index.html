@@ -23,6 +23,7 @@
   --brand:#1593a3; --brand-2:#19a9bb; --brand-fg:#f3fbfb; color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0d1719; --surface:#142226; --fg:#e7f1f0; --muted:#97aaae; --line:#22363a; --brand:#1593a3; --brand-2:#19a9bb; color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{overflow-x:hidden}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;
   padding:0 0 calc(env(safe-area-inset-bottom) + 40px)}
@@ -583,7 +584,7 @@ async function loadAcct(){
   catch(e){ toast(e.message); if(/غلط/.test(e.message)){ ME = null; store.set('suqya-me', null); view('vLogin'); } }
 }
 function openReg(){
-  if(LIVE && ME) loadAcct(); else showForm('new');
+  if(LIVE && ME) loadAcct(); else { ACCT = null; showForm('new'); }
   $('reg').classList.add('show'); document.body.style.overflow = 'hidden';
 }
 function closeReg(){ $('reg').classList.remove('show'); document.body.style.overflow = ''; }
@@ -591,7 +592,7 @@ $('regClose').onclick = closeReg;
 $('joinBtn').onclick = openReg; $('drvTop').onclick = openReg;
 $('toLogin').onclick = () => { $('lPhone').value = R.phone || ''; view('vLogin'); };
 $('toNew').onclick = () => showForm('new');
-$('cancelEdit').onclick = () => { view('vAcct'); paintAcct(); };
+$('cancelEdit').onclick = () => { if(ME && ACCT && ACCT.status) { view('vAcct'); paintAcct(); } else showForm('new'); };
 $('loginBtn').onclick = async () => {
   const phone = normPhone($('lPhone').value), code = $('lCode').value.trim().toUpperCase();
   if(phone.length < 11 || code.length < 6){ toast('اكتب الرقم ورمز الدخول'); return; }
@@ -603,24 +604,25 @@ $('loginBtn').onclick = async () => {
 $('copyCode').onclick = () => navigator.clipboard?.writeText(ME.code).then(() => toast('انسخ الرمز ✅'), () => toast('ما قدرت أنسخ — صوّر الشاشة'));
 $('toAcct').onclick = loadAcct;
 async function setAvail(v){
-  if(!ACCT || ACCT.available === v) return;
+  if(!ME || !ACCT || ACCT.available === v) return;
   try{ ACCT = await rpc('driver_set_available', { p_phone:ME.phone, p_code:ME.code, p_available:v }); paintAcct(); toast(v ? 'صرت متوفر 🟢' : 'صرت مشغول 🔴'); refreshDrivers(); }
   catch(e){ toast(e.message); }
 }
 $('aOn').onclick = () => setAvail(true); $('aOff').onclick = () => setAvail(false);
-$('aEdit').onclick = () => { Object.assign(R, { name:ACCT.name, phone:ACCT.phone.replace(/^968/, ''), areas:[...ACCT.areas], types:[...ACCT.types], prices:numPrices(ACCT.prices), note:ACCT.note || '' }); showForm('edit'); };
-$('aShowCode').onclick = () => { $('myCode').textContent = ME.code; view('vDone'); $('regTitle').textContent = '🔑 رمز الدخول'; $('vDone').querySelector('.stat').hidden = true; };
+$('aEdit').onclick = () => { if(!ME || !ACCT || !ACCT.status){ showForm('new'); return; } Object.assign(R, { name:ACCT.name, phone:ACCT.phone.replace(/^968/, ''), areas:[...ACCT.areas], types:[...ACCT.types], prices:numPrices(ACCT.prices), note:ACCT.note || '' }); showForm('edit'); };
+$('aShowCode').onclick = () => { if(!ME){ showForm('new'); return; } $('myCode').textContent = ME.code; view('vDone'); $('regTitle').textContent = '🔑 رمز الدخول'; $('vDone').querySelector('.stat').hidden = true; };
 $('aDelete').onclick = async () => {
+  if(!ME){ showForm('new'); return; }
   if(!confirm('متأكد تبغى تحذف حسابك؟ بتنحذف كل بياناتك ويختفي صهريجك من التطبيق نهائيًا.')) return;
   try{ await rpc('driver_delete', { p_phone:ME.phone, p_code:ME.code }); ME = null; ACCT = null; store.set('suqya-me', null); toast('انحذف حسابك ✅'); refreshDrivers(); closeReg(); }
   catch(e){ toast(e.message); }
 };
-$('aLogout').onclick = () => { if(!confirm('متأكد؟ بتحتاج رمز الدخول عشان ترجع تدخل.')) return; ME = null; ACCT = null; store.set('suqya-me', null); showForm('new'); };
+$('aLogout').onclick = () => { if(!ME){ showForm('new'); return; } if(!confirm('متأكد؟ بتحتاج رمز الدخول عشان ترجع تدخل.')) return; ME = null; ACCT = null; store.set('suqya-me', null); showForm('new'); };
 
 $('regSend').onclick = async () => {
   const name = R.name.trim(), phone = normPhone(R.phone), sizes = Object.keys(R.prices);
   if(!name){ toast('اكتب اسمك أول'); $('rName').focus(); return; }
-  if(phone.length < 11){ toast('اكتب رقم واتساب صحيح'); $('rPhone').focus(); return; }
+  if(phone.length < 11){ toast('رقم الواتساب لازم يكون 8 أرقام (مثال: 9XXXXXXX)'); $('rPhone').focus(); return; }
   if(!R.areas.length){ toast('اختار ولاية وحدة على الأقل'); return; }
   if(!R.types.length){ toast('اختار نوع الماي'); return; }
   if(!sizes.length || sizes.some(k => !(R.prices[k] > 0))){ toast('علّم حجم واحد على الأقل واكتب سعره'); return; }
