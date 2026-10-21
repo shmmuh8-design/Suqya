@@ -276,7 +276,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
     <button class="btn" type="button" id="joinBtn">سجّل كسايق صهريج</button>
   </section>
 
-  <footer>سُقيا — اطلب صهريجك<br>© سالم الجابري — مسقط، سلطنة عُمان<br><a href="privacy.html" style="color:var(--muted)">سياسة الخصوصية</a><span id="oldLink"><br><a href="old/" style="color:var(--muted)">النسخة القديمة من سُقيا</a></span></footer>
+  <footer>سُقيا — اطلب صهريجك<br>© سالم الجابري — مسقط، سلطنة عُمان<br><a href="privacy.html" style="color:var(--muted)">سياسة الخصوصية</a><span id="rateLink" hidden><br><a id="rateA" href="#" target="_blank" rel="noopener" style="color:var(--brand);font-weight:700">⭐ عجبك سُقيا؟ قيّمه في App Store</a></span><span id="oldLink"><br><a href="old/" style="color:var(--muted)">النسخة القديمة من سُقيا</a></span></footer>
 </div>
 
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
@@ -506,6 +506,7 @@ function order(d){
     openSheet('🧪 هذا طلب تجريبي', msg, 'هذا الصهريج مثال للتجربة، فالطلب ما انرسل لأحد. هذي الرسالة اللي بتوصل السايق لما يكون مسجّل.');
     return;
   }
+  try{ localStorage.setItem('suqya-orders', String((+localStorage.getItem('suqya-orders') || 0) + 1)); }catch(e){}
   window.location.href = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
 }
 
@@ -656,7 +657,18 @@ $('regSend').onclick = async () => {
   openSheet('تسجيلك جاهز ✅', msg, 'انسخ الرسالة وأرسلها لإدارة سُقيا.');
 };
 
-if(window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform()) $('oldLink').remove();
+if(window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform()){
+  $('oldLink').remove();
+  // ⭐ التقييم: رابط ثابت تحت + طلب تقييم أبل الرسمي بعد ثاني طلب ناجح (أبل تقرر تظهره، وبحد أقصى 3 مرات بالسنة)
+  const APP_ID = (window.SUQYA_APP || {}).appleId;
+  if(APP_ID){ $('rateA').href = 'https://apps.apple.com/app/id' + APP_ID + '?action=write-review'; $('rateLink').hidden = false; }
+  const RV = Capacitor.Plugins.InAppReview || (Capacitor.registerPlugin && Capacitor.registerPlugin('InAppReview'));
+  const maybeReview = () => { try{
+    const n = +localStorage.getItem('suqya-orders') || 0, last = +localStorage.getItem('suqya-rv') || 0;
+    if(RV && n >= 2 && Date.now() - last > 120 * 864e5){ localStorage.setItem('suqya-rv', String(Date.now())); setTimeout(() => RV.requestReview().catch(() => {}), 1500); }
+  }catch(e){} };
+  document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible') maybeReview(); });
+}
 renderControls(); renderDrivers();
 if(/^#(driver|sayeq|سايق)$/.test(decodeURIComponent(location.hash))) openReg();
 let DEMO = [];
