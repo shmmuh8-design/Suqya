@@ -82,6 +82,8 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-
 .price span{font-size:.72rem;color:var(--muted)}
 .drv .go{grid-column:1 / -1}
 .drv .go .btn{width:100%;justify-content:center;font-size:.98rem;padding:12px}
+.drv .go .alt{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.drv .go .alt .btn{font-size:.88rem;padding:9px}
 .tag{display:inline-block;font-size:.7rem;font-weight:700;border-radius:999px;padding:2px 8px;background:#fff1d6;color:#8a5a10;margin-inline-start:6px;vertical-align:middle}
 .empty{background:var(--surface);border:1px dashed var(--line);border-radius:16px;padding:16px;color:var(--muted);line-height:1.8;font-size:.9rem;text-align:center}
 .note{font-size:.8rem;color:var(--muted);line-height:1.7}
@@ -427,12 +429,14 @@ function hideDriver(d){
   if(!confirm('إخفاء «' + d.name + '»؟ ما بيطلع لك في القائمة بعد كذا.')) return;
   const h = hiddenSet(); h.add(dkey(d)); store.set('suqya_hidden', [...h]); renderDrivers();
 }
-function reportDriver(d){
+async function reportDriver(d){
   const why = prompt('ليش تبلّغ عن «' + d.name + '»؟ (محتوى غير لائق، رقم غلط، احتيال…)');
   if(why == null) return;
+  if(LIVE && d.id){
+    try{ await rpc('report_driver', { p_id:d.id, p_reason:why.trim() }); toast('وصل البلاغ لإدارة سُقيا، شكرًا لك 🙏'); return; }catch(e){}
+  }
   const msg = ['🚩 بلاغ عن سايق في سُقيا', '', '• السايق: ' + d.name, '• المعرّف: ' + dkey(d), '• السبب: ' + (why.trim() || 'بدون تفاصيل')].join('\n');
-  const admin = normPhone(DATA.admin && DATA.admin.whatsapp);
-  window.location.href = 'https://wa.me/' + admin + '?text=' + encodeURIComponent(msg);
+  openSheet('🚩 بلاغ', msg, 'ما قدرنا نرسل البلاغ الحين. انسخه وأرسله لإدارة سُقيا: واتساب 96894005400 أو design.omani1@gmail.com');
 }
 function matches(){
   const hid = hiddenSet();
@@ -465,8 +469,14 @@ function renderDrivers(){
     pr.innerHTML = '<b>' + omr(d.prices[String(S.gal)]) + '</b><span>ر.ع' + (d.demo ? ' · تجريبي' : '') + '</span>';
     const go = document.createElement('div'); go.className = 'go';
     const b = document.createElement('button'); b.type = 'button'; b.className = 'btn wa'; b.innerHTML = '💬 اطلب من الواتساب';
-    if(busy){ b.disabled = true; b.textContent = '⏳ مشغول الحين — جرّب بعدين'; } else b.onclick = () => order(d);
+    if(busy){ b.disabled = true; b.textContent = '⏳ مشغول الحين — جرّب بعدين'; } else b.onclick = () => order(d, 'wa');
     go.append(b);
+    if(!busy){
+      const alt = document.createElement('div'); alt.className = 'alt';
+      const c = document.createElement('button'); c.type = 'button'; c.className = 'btn ghost'; c.textContent = '📞 اتصال'; c.onclick = () => order(d, 'call');
+      const t = document.createElement('button'); t.type = 'button'; t.className = 'btn ghost'; t.textContent = '✉️ رسالة نصية'; t.onclick = () => order(d, 'sms');
+      alt.append(c, t); go.append(alt);
+    }
     const mod = document.createElement('div'); mod.className = 'mod';
     const rp = document.createElement('button'); rp.type = 'button'; rp.textContent = '🚩 إبلاغ'; rp.onclick = () => reportDriver(d);
     const hd = document.createElement('button'); hd.type = 'button'; hd.textContent = '🚫 إخفاء'; hd.onclick = () => hideDriver(d);
@@ -497,17 +507,20 @@ function orderText(d){
   return lines.filter((x, i) => x !== '' || i === 1).join('\n');
 }
 
-function order(d){
+function order(d, via){
+  via = via || 'wa';
   if(!S.lat && !$('addr').value.trim()){ toast('حدد موقعك أو اكتب العنوان عشان يعرف السايق وين يوصل'); $('addr').focus(); return; }
   store.set('suqya-last', { gov:S.gov, area:S.area, gal:S.gal, type:S.type });
   const msg = orderText(d);
   const phone = normPhone(d.phone);
+  if(via === 'call' && phone.length >= 10 && !d.demo){ window.location.href = 'tel:+' + phone; return; }
   if(d.demo || phone.length < 10){
     openSheet('🧪 هذا طلب تجريبي', msg, 'هذا الصهريج مثال للتجربة، فالطلب ما انرسل لأحد. هذي الرسالة اللي بتوصل السايق لما يكون مسجّل.');
     return;
   }
   try{ localStorage.setItem('suqya-orders', String((+localStorage.getItem('suqya-orders') || 0) + 1)); }catch(e){}
-  window.location.href = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
+  if(via === 'sms') window.location.href = 'sms:+' + phone + '&body=' + encodeURIComponent(msg);
+  else window.location.href = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
 }
 
 function openSheet(title, msg, note){ $('sheetTitle').textContent = title; $('sheetMsg').textContent = msg; $('sheetNote').textContent = note || ''; $('sheet').classList.add('show'); }
