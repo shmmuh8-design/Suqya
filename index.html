@@ -154,7 +154,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
       سُقيا
     </div>
     <h1>صهريج ماي لين باب بيتك 🚛💧</h1>
-    <p>اختار المنطقة والحجم، وشوف أسعار الصهاريج القريبة، واطلب بضغطة على الواتساب.</p>
+    <p>اختار المنطقة والحجم، وشوف أسعار الصهاريج القريبة، واطلب بضغطة: اتصال أو رسالة أو واتساب.</p>
 
     <!-- water tanker truck illustration (drawn here, no external images) -->
     <svg class="truck" viewBox="0 0 400 210" role="img" aria-label="صهريج ماي">
@@ -217,7 +217,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
   <div class="feats">
     <div class="feat"><b>📍</b>أقرب صهريج لمنطقتك</div>
     <div class="feat"><b>💰</b>السعر واضح قبل الطلب</div>
-    <div class="feat"><b>💬</b>طلب بضغطة على الواتساب</div>
+    <div class="feat"><b>📞</b>اطلب باتصال أو رسالة أو واتساب</div>
   </div>
 
   <div class="demoBar" id="demoBar" hidden>🧪 <b>نسخة تجريبية:</b> الصهاريج والأسعار الحين أمثلة، والطلب ما يوصل لأحد. أول ما ينضاف سوّاقين حقيقيين يشتغل الطلب على طول.</div>
@@ -274,7 +274,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 
   <section class="card join" id="join">
     <h2>عندك صهريج؟ 🚛</h2>
-    <p>سجّل في سُقيا وتوصلك طلبات الزبائن في منطقتك على الواتساب مباشرة.</p>
+    <p>سجّل في سُقيا وتوصلك طلبات الزبائن في منطقتك مباشرة باتصال أو رسالة أو واتساب.</p>
     <button class="btn" type="button" id="joinBtn">سجّل كسايق صهريج</button>
   </section>
 
@@ -296,13 +296,13 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
   <div class="wrapR">
     <div class="head"><h2 id="regTitle">🚛 سجّل كسايق صهريج</h2><button class="x" type="button" id="regClose" aria-label="إغلاق">✕</button></div>
     <div id="vForm">
-    <p class="hint" id="regIntro">عبّ بياناتك، وعلى طول يظهر صهريجك للزبائن في الولايات اللي تختارها، وطلباتهم توصلك على الواتساب مباشرة.</p>
+    <p class="hint" id="regIntro">عبّ بياناتك، وعلى طول يظهر صهريجك للزبائن في الولايات اللي تختارها، وطلباتهم توصلك مباشرة باتصال أو رسالة أو واتساب.</p>
     <button class="linkb" type="button" id="toLogin" hidden>مسجّل من قبل؟ ادخل لحسابك ←</button>
 
     <label class="l" for="rName">الاسم أو اسم المؤسسة</label>
     <input class="fld" id="rName" autocomplete="name" placeholder="مثال: أبو سعيد لنقل المياه">
 
-    <label class="l" for="rPhone">رقم الواتساب</label>
+    <label class="l" for="rPhone">رقم الجوال <small style="font-weight:400;opacity:.7">(الزبائن يتصلون أو يراسلونك عليه، ويفضّل يكون عليه واتساب)</small></label>
     <input class="fld" id="rPhone" type="tel" inputmode="tel" dir="ltr" placeholder="9XXXXXXX">
 
     <label class="l">الولايات اللي توصلها</label>
@@ -325,13 +325,13 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
     </div>
 
     <div id="vLogin" hidden>
-      <p class="hint">اكتب رقمك ورمز الدخول اللي طلع لك وقت التسجيل.</p>
-      <label class="l" for="lPhone">رقم الواتساب</label>
+      <p class="hint">اكتب رقم جوالك ورمز الدخول اللي طلع لك وقت التسجيل. الدخول هنا داخل سُقيا، وما يحتاج واتساب ولا أي تطبيق ثاني.</p>
+      <label class="l" for="lPhone">رقم الجوال</label>
       <input class="fld" id="lPhone" type="tel" inputmode="tel" dir="ltr" placeholder="9XXXXXXX">
       <label class="l" for="lCode">رمز الدخول</label>
       <input class="fld" id="lCode" dir="ltr" autocapitalize="characters" autocomplete="one-time-code" placeholder="مثال: 7F3A9C21" style="letter-spacing:.12em">
       <button class="btn" type="button" id="loginBtn" style="width:100%;justify-content:center;margin-top:18px">دخول</button>
-      <p class="hint">نسيت الرمز؟ تواصل مع إدارة سُقيا. <button class="linkb" type="button" id="toNew">سجّل صهريج جديد</button></p>
+      <p class="hint">نسيت الرمز؟ راسل إدارة سُقيا على <span dir="ltr">design.omani1@gmail.com</span>. <button class="linkb" type="button" id="toNew">سجّل صهريج جديد</button></p>
     </div>
 
     <div id="vDone" hidden>
@@ -636,7 +636,7 @@ $('aLogout').onclick = () => { if(!ME){ showForm('new'); return; } if(!confirm('
 $('regSend').onclick = async () => {
   const name = R.name.trim(), phone = normPhone(R.phone), sizes = Object.keys(R.prices);
   if(!name){ toast('اكتب اسمك أول'); $('rName').focus(); return; }
-  if(phone.length < 11){ toast('رقم الواتساب لازم يكون 8 أرقام (مثال: 9XXXXXXX)'); $('rPhone').focus(); return; }
+  if(phone.length < 11){ toast('رقم الجوال لازم يكون 8 أرقام (مثال: 9XXXXXXX)'); $('rPhone').focus(); return; }
   if(!R.areas.length){ toast('اختار ولاية وحدة على الأقل'); return; }
   if(!R.types.length){ toast('اختار نوع الماي'); return; }
   if(!sizes.length || sizes.some(k => !(R.prices[k] > 0))){ toast('علّم حجم واحد على الأقل واكتب سعره'); return; }
@@ -659,7 +659,7 @@ $('regSend').onclick = async () => {
   }
   const tl = id => (DATA.types.find(t => t.id === id) || {}).label || id;
   const lines = ['السلام عليكم، أبي أسجّل صهريجي في سُقيا 🚛', '',
-    '• الاسم: ' + name, '• الواتساب: +' + phone,
+    '• الاسم: ' + name, '• الجوال: +' + phone,
     '• المناطق: ' + areaText({ areas:R.areas }),
     '• نوع الماي: ' + R.types.map(tl).join(' + '),
     '• الأسعار:', ...sizes.sort((a, b) => a - b).map(k => '   ' + (+k).toLocaleString('en') + ' جالون = ' + R.prices[k] + ' ر.ع'),
