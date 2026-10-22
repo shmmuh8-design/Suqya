@@ -6,4 +6,4 @@ window.SUQYA_SB = {
 };
 
 // رقم سُقيا في App Store (Apple ID من App Store Connect ← App Information). يظهر رابط «قيّم سُقيا» لما ينحط.
-window.SUQYA_APP = { appleId: '' };
+window.SUQYA_APP = { appleId: '6824513927' };
