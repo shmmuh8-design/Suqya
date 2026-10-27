@@ -23,18 +23,20 @@ workflows:
           [ -d ios ] || npx cap add ios
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/App/App.xcodeproj/project.pbxproj
           sed -i '' 's/TARGETED_DEVICE_FAMILY = "[0-9,]*";/TARGETED_DEVICE_FAMILY = 1;/g' ios/App/App.xcodeproj/project.pbxproj
+          sed -i '' 's/MARKETING_VERSION = [0-9.]*;/MARKETING_VERSION = 1.1;/g' ios/App/App.xcodeproj/project.pbxproj   # رقم النسخة في المتجر (1.1 = إضافة الإنجليزي)
           [ -f ios/App/Podfile ] && sed -i '' "s/platform :ios, .*/platform :ios, '15.0'/" ios/App/Podfile
           npm run assets
           npx cap sync ios
-      - name: إعدادات التطبيق (الاسم، الموقع، اللغة)
+      - name: إعدادات التطبيق (الاسم، الموقع، اللغات عربي + إنجليزي)
         script: |
           PLIST=ios/App/App/Info.plist
           /usr/libexec/PlistBuddy -c "Delete :CFBundleDisplayName" $PLIST || true
           /usr/libexec/PlistBuddy -c "Add :CFBundleDisplayName string سُقيا" $PLIST
-          /usr/libexec/PlistBuddy -c "Add :NSLocationWhenInUseUsageDescription string سُقيا تحتاج موقعك عشان ترسله للسايق ويوصلك الصهريج لين باب بيتك" $PLIST || true
+          /usr/libexec/PlistBuddy -c "Add :NSLocationWhenInUseUsageDescription string سُقيا تحتاج موقعك عشان ترسله للسايق ويوصلك الصهريج لين باب بيتك — Suqya uses your location to send it to the tanker driver" $PLIST || true
           /usr/libexec/PlistBuddy -c "Set :CFBundleDevelopmentRegion ar" $PLIST || true
           /usr/libexec/PlistBuddy -c "Add :CFBundleLocalizations array" $PLIST || true
           /usr/libexec/PlistBuddy -c "Add :CFBundleLocalizations:0 string ar" $PLIST || true
+          /usr/libexec/PlistBuddy -c "Add :CFBundleLocalizations:1 string en" $PLIST || true
           /usr/libexec/PlistBuddy -c "Add :LSApplicationQueriesSchemes array" $PLIST || true
           /usr/libexec/PlistBuddy -c "Add :LSApplicationQueriesSchemes:0 string whatsapp" $PLIST || true
           /usr/libexec/PlistBuddy -c "Delete :UISupportedInterfaceOrientations" $PLIST || true

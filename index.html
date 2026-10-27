@@ -11,6 +11,11 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
 <title>سُقيا — اطلب صهريجك</title>
+<script>
+// اللغة: المحفوظة، وإلا لغة الجهاز (عربي لو الجهاز عربي، وإلا إنجليزي)
+window.SUQYA_LANG = (function(){ try{ var s = localStorage.getItem('suqya-lang'); if(s === 'ar' || s === 'en') return s; }catch(e){} return /^ar/i.test(navigator.language || 'ar') ? 'ar' : 'en'; })();
+if(window.SUQYA_LANG === 'en'){ document.documentElement.lang = 'en'; document.documentElement.dir = 'ltr'; document.title = 'Suqya — Order a water tanker'; }
+</script>
 <style>
 /* Layout: hero with the tanker, then the order card (area → size → type → place & time), then matching tankers, then "join as a driver" */
 :root{
@@ -48,6 +53,8 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-
 .btn{border:0;border-radius:14px;background:var(--brand);color:var(--brand-fg);font:800 1.05rem var(--body);padding:14px 22px;cursor:pointer;
   box-shadow:0 8px 18px rgba(11,110,122,.28);display:inline-flex;align-items:center;gap:8px;text-decoration:none}
 .btn.wa{background:#1fa855;box-shadow:0 8px 18px rgba(31,168,85,.28)}
+.tools{display:flex;gap:8px;margin-top:6px}
+.langB{border:0;border-radius:999px;padding:7px 12px;font:inherit;font-size:.85rem;font-weight:800;background:rgba(255,255,255,.75);color:#0B6E7A;cursor:pointer}
 .btn.ghost{background:transparent;color:var(--brand);box-shadow:none;border:1.5px solid var(--brand)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -151,11 +158,14 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
   <header class="hero">
     <div class="brand">
       <svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="112" fill="#0B6E7A"/><path d="M256 86S130 230 130 302a126 126 0 0 0 252 0C382 230 256 86 256 86Z" fill="#fff"/><path d="M196 310a60 60 0 0 0 60 60" stroke="#0B6E7A" stroke-width="22" fill="none" stroke-linecap="round"/></svg>
-      سُقيا
-      <button type="button" id="shareApp" style="border:0;border-radius:999px;padding:7px 12px;font:inherit;font-size:.85rem;font-weight:700;background:rgba(255,255,255,.75);color:#0B6E7A;cursor:pointer">📤 شارك</button>
+      <span data-en="Suqya">سُقيا</span>
     </div>
-    <h1>صهريج ماي لين باب بيتك 🚛💧</h1>
-    <p>اختار المنطقة والحجم، وشوف أسعار الصهاريج القريبة، واطلب بضغطة: اتصال أو رسالة أو واتساب.</p>
+    <div class="tools">
+      <button type="button" id="shareApp" class="langB" data-en="📤 Share">📤 شارك</button>
+      <button type="button" id="langBtn" class="langB" aria-label="Language / اللغة">🌐 EN</button>
+    </div>
+    <h1 data-en="A water tanker to your doorstep 🚛💧">صهريج ماي لين باب بيتك 🚛💧</h1>
+    <p data-en="Pick your area and size, compare nearby tanker prices, and order in one tap: call, SMS or WhatsApp.">اختار المنطقة والحجم، وشوف أسعار الصهاريج القريبة، واطلب بضغطة: اتصال أو رسالة أو واتساب.</p>
 
     <!-- water tanker truck illustration (drawn here, no external images) -->
     <svg class="truck" viewBox="0 0 400 210" role="img" aria-label="صهريج ماي">
@@ -211,75 +221,75 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
       <g class="wheel"><circle cx="250" cy="160" r="17" fill="#1f2a30"/><circle cx="250" cy="160" r="8" fill="#9aa6ab"/><path d="M250 152v16M242 160h16" stroke="#1f2a30" stroke-width="2.5"/></g>
       <g class="wheel"><circle cx="296" cy="160" r="17" fill="#1f2a30"/><circle cx="296" cy="160" r="8" fill="#9aa6ab"/><path d="M296 152v16M288 160h16" stroke="#1f2a30" stroke-width="2.5"/></g>
     </svg>
-    <div class="cta"><a class="btn" href="#order">اطلب صهريج الحين ←</a></div>
-    <button class="drvTop" type="button" id="drvTop">🚛 أنا سايق</button>
+    <div class="cta"><a class="btn" href="#order" data-en="Order a tanker now →">اطلب صهريج الحين ←</a></div>
+    <button class="drvTop" type="button" id="drvTop" data-en="🚛 I'm a driver">🚛 أنا سايق</button>
   </header>
 
   <div class="feats">
-    <div class="feat"><b>📍</b>أقرب صهريج لمنطقتك</div>
-    <div class="feat"><b>💰</b>السعر واضح قبل الطلب</div>
-    <div class="feat"><b>📞</b>اطلب باتصال أو رسالة أو واتساب</div>
+    <div class="feat" data-en="Nearest tanker to your area"><b>📍</b>أقرب صهريج لمنطقتك</div>
+    <div class="feat" data-en="Clear price before you order"><b>💰</b>السعر واضح قبل الطلب</div>
+    <div class="feat" data-en="Order by call, SMS or WhatsApp"><b>📞</b>اطلب باتصال أو رسالة أو واتساب</div>
   </div>
 
-  <div class="demoBar" id="demoBar" hidden>🧪 <b>نسخة تجريبية:</b> الصهاريج والأسعار الحين أمثلة، والطلب ما يوصل لأحد. أول ما ينضاف سوّاقين حقيقيين يشتغل الطلب على طول.</div>
+  <div class="demoBar" id="demoBar" hidden data-enh="🧪 <b>Demo version:</b> tankers and prices are examples for now, and orders don't reach anyone. As soon as real drivers join, ordering works right away.">🧪 <b>نسخة تجريبية:</b> الصهاريج والأسعار الحين أمثلة، والطلب ما يوصل لأحد. أول ما ينضاف سوّاقين حقيقيين يشتغل الطلب على طول.</div>
 
   <section class="card" id="order" aria-labelledby="orderTitle">
-    <h2 id="orderTitle">طلب صهريج</h2>
-    <div class="note">عبّ الخطوات وتطلع لك الصهاريج المتوفرة تحت 👇</div>
+    <h2 id="orderTitle" data-en="Order a tanker">طلب صهريج</h2>
+    <div class="note" data-en="Fill in the steps and the available tankers appear below 👇">عبّ الخطوات وتطلع لك الصهاريج المتوفرة تحت 👇</div>
 
     <div class="step">
-      <label for="gov"><span class="num">1</span> وين المنطقة؟</label>
-      <div class="row2"><select id="gov" class="fld" aria-label="المحافظة"></select><select id="area" class="fld" aria-label="الولاية"></select></div>
+      <label for="gov" data-en="Where are you?"><span class="num">1</span> وين المنطقة؟</label>
+      <div class="row2"><select id="gov" class="fld" aria-label="المحافظة" data-ena="Governorate"></select><select id="area" class="fld" aria-label="الولاية" data-ena="Wilayat"></select></div>
     </div>
 
     <div class="step">
-      <div class="lbl"><span class="num">2</span> كم حجم الصهريج؟</div>
+      <div class="lbl" data-en="Tanker size?"><span class="num">2</span> كم حجم الصهريج؟</div>
       <div class="sizes" id="sizes" role="group" aria-label="حجم الصهريج"></div>
-      <div class="note" style="margin-top:6px">الجالون تقريبًا 4.5 لتر. خزان البيت العادي غالبًا يحتاج 1000 إلى 2000 جالون.</div>
+      <div class="note" style="margin-top:6px" data-en="A gallon is about 4.5 liters. A typical home tank needs 1,000 to 2,000 gallons.">الجالون تقريبًا 4.5 لتر. خزان البيت العادي غالبًا يحتاج 1000 إلى 2000 جالون.</div>
     </div>
 
     <div class="step">
-      <div class="lbl"><span class="num">3</span> نوع الماي</div>
+      <div class="lbl" data-en="Water type"><span class="num">3</span> نوع الماي</div>
       <div class="chips" id="types" role="group" aria-label="نوع الماي"></div>
     </div>
 
     <div class="step">
-      <div class="lbl"><span class="num">4</span> الموقع والوقت</div>
+      <div class="lbl" data-en="Location & time"><span class="num">4</span> الموقع والوقت</div>
       <div class="loc">
-        <button class="btn ghost" type="button" id="gps">📍 موقعي الحين</button>
-        <input id="addr" class="fld" type="text" placeholder="أو اكتب الحي ورقم البيت" aria-label="العنوان">
+        <button class="btn ghost" type="button" id="gps" data-en="📍 My location">📍 موقعي الحين</button>
+        <input id="addr" class="fld" type="text" placeholder="أو اكتب الحي ورقم البيت" data-enp="Or type your area and house number" aria-label="العنوان">
       </div>
       <div class="locTxt" id="locTxt"></div>
       <div class="row2" style="margin-top:8px">
         <select id="when" class="fld" aria-label="متى">
-          <option value="الحين">في أقرب وقت</option>
-          <option value="اليوم">اليوم</option>
-          <option value="بكرة">بكرة</option>
+          <option value="الحين" data-en="As soon as possible">في أقرب وقت</option>
+          <option value="اليوم" data-en="Today">اليوم</option>
+          <option value="بكرة" data-en="Tomorrow">بكرة</option>
         </select>
         <select id="slot" class="fld" aria-label="الفترة">
-          <option value="أي وقت">أي وقت</option>
-          <option value="الصبح">الصبح</option>
-          <option value="الظهر">الظهر</option>
-          <option value="العصر">العصر</option>
-          <option value="المسا">المسا</option>
+          <option value="أي وقت" data-en="Any time">أي وقت</option>
+          <option value="الصبح" data-en="Morning">الصبح</option>
+          <option value="الظهر" data-en="Noon">الظهر</option>
+          <option value="العصر" data-en="Afternoon">العصر</option>
+          <option value="المسا" data-en="Evening">المسا</option>
         </select>
       </div>
-      <input id="cname" class="fld" style="margin-top:8px" type="text" placeholder="اسمك (اختياري)" aria-label="الاسم" autocomplete="name">
+      <input id="cname" class="fld" style="margin-top:8px" type="text" placeholder="اسمك (اختياري)" data-enp="Your name (optional)" aria-label="الاسم" autocomplete="name">
     </div>
   </section>
 
   <section aria-labelledby="resTitle">
-    <h2 id="resTitle" style="margin:4px 0 10px;font-size:1.15rem">🚛 الصهاريج المتوفرة <small id="resCount" style="font-weight:400;color:var(--muted);font-size:.8rem"></small></h2>
+    <h2 id="resTitle" data-en="🚛 Available tankers" style="margin:4px 0 10px;font-size:1.15rem">🚛 الصهاريج المتوفرة <small id="resCount" style="font-weight:400;color:var(--muted);font-size:.8rem"></small></h2>
     <div class="drivers" id="drivers"></div>
   </section>
 
   <section class="card join" id="join">
-    <h2>عندك صهريج؟ 🚛</h2>
-    <p>سجّل في سُقيا وتوصلك طلبات الزبائن في منطقتك مباشرة باتصال أو رسالة أو واتساب.</p>
-    <button class="btn" type="button" id="joinBtn">سجّل كسايق صهريج</button>
+    <h2 data-en="Got a tanker? 🚛">عندك صهريج؟ 🚛</h2>
+    <p data-en="Register on Suqya and get customer orders in your area directly by call, SMS or WhatsApp.">سجّل في سُقيا وتوصلك طلبات الزبائن في منطقتك مباشرة باتصال أو رسالة أو واتساب.</p>
+    <button class="btn" type="button" id="joinBtn" data-en="Register as a tanker driver">سجّل كسايق صهريج</button>
   </section>
 
-  <footer>سُقيا — اطلب صهريجك<br>© سالم الجابري — مسقط، سلطنة عُمان<br><a href="privacy.html" style="color:var(--muted)">سياسة الخصوصية</a><span id="rateLink" hidden><br><a id="rateA" href="#" target="_blank" rel="noopener" style="color:var(--brand);font-weight:700">⭐ عجبك سُقيا؟ قيّمه في App Store</a></span><span id="oldLink"><br><a href="old/" style="color:var(--muted)">النسخة القديمة من سُقيا</a></span></footer>
+  <footer data-enh="Suqya — order your tanker<br>© Salem Aljabri — Muscat, Sultanate of Oman<br><a href=&quot;privacy.html#en&quot; style=&quot;color:var(--muted)&quot;>Privacy Policy</a><span id=&quot;rateLink&quot; hidden><br><a id=&quot;rateA&quot; href=&quot;#&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; style=&quot;color:var(--brand);font-weight:700&quot;>⭐ Enjoying Suqya? Rate it on the App Store</a></span><span id=&quot;oldLink&quot;><br><a href=&quot;old/&quot; style=&quot;color:var(--muted)&quot;>Old version of Suqya</a></span>">سُقيا — اطلب صهريجك<br>© سالم الجابري — مسقط، سلطنة عُمان<br><a href="privacy.html" style="color:var(--muted)">سياسة الخصوصية</a><span id="rateLink" hidden><br><a id="rateA" href="#" target="_blank" rel="noopener" style="color:var(--brand);font-weight:700">⭐ عجبك سُقيا؟ قيّمه في App Store</a></span><span id="oldLink"><br><a href="old/" style="color:var(--muted)">النسخة القديمة من سُقيا</a></span></footer>
 </div>
 
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
@@ -288,76 +298,76 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
     <pre id="sheetMsg"></pre>
     <div class="note" id="sheetNote"></div>
     <div class="acts" style="margin-top:12px">
-      <button class="btn" type="button" id="copyMsg">📋 نسخ الرسالة</button>
-      <button class="btn ghost" type="button" id="closeSheet">إغلاق</button>
+      <button class="btn" type="button" id="copyMsg" data-en="📋 Copy message">📋 نسخ الرسالة</button>
+      <button class="btn ghost" type="button" id="closeSheet" data-en="Close">إغلاق</button>
     </div>
   </div>
 </div>
 <div class="reg" id="reg" role="dialog" aria-modal="true" aria-labelledby="regTitle">
   <div class="wrapR">
-    <div class="head"><h2 id="regTitle">🚛 سجّل كسايق صهريج</h2><button class="x" type="button" id="regClose" aria-label="إغلاق">✕</button></div>
+    <div class="head"><h2 id="regTitle">🚛 سجّل كسايق صهريج</h2><button class="x" type="button" id="regClose" aria-label="إغلاق" data-ena="Close">✕</button></div>
     <div id="vForm">
-    <p class="hint" id="regIntro">عبّ بياناتك، وعلى طول يظهر صهريجك للزبائن في الولايات اللي تختارها، وطلباتهم توصلك مباشرة باتصال أو رسالة أو واتساب.</p>
-    <button class="linkb" type="button" id="toLogin" hidden>مسجّل من قبل؟ ادخل لحسابك ←</button>
+    <p class="hint" id="regIntro" data-en="Fill in your details and your tanker shows up right away for customers in the wilayats you pick. Their orders reach you directly by call, SMS or WhatsApp.">عبّ بياناتك، وعلى طول يظهر صهريجك للزبائن في الولايات اللي تختارها، وطلباتهم توصلك مباشرة باتصال أو رسالة أو واتساب.</p>
+    <button class="linkb" type="button" id="toLogin" hidden data-en="Already registered? Log in →">مسجّل من قبل؟ ادخل لحسابك ←</button>
 
-    <label class="l" for="rName">الاسم أو اسم المؤسسة</label>
-    <input class="fld" id="rName" autocomplete="name" placeholder="مثال: أبو سعيد لنقل المياه">
+    <label class="l" for="rName" data-en="Name or business name">الاسم أو اسم المؤسسة</label>
+    <input class="fld" id="rName" autocomplete="name" placeholder="مثال: أبو سعيد لنقل المياه" data-enp="e.g. Abu Saeed Water Transport">
 
-    <label class="l" for="rPhone">رقم الجوال <small style="font-weight:400;opacity:.7">(الزبائن يتصلون أو يراسلونك عليه، ويفضّل يكون عليه واتساب)</small></label>
+    <label class="l" for="rPhone" data-enh="Phone number <small style=&quot;font-weight:400;opacity:.7&quot;>(customers call or message you on it; WhatsApp on it is a plus)</small>">رقم الجوال <small style="font-weight:400;opacity:.7">(الزبائن يتصلون أو يراسلونك عليه، ويفضّل يكون عليه واتساب)</small></label>
     <input class="fld" id="rPhone" type="tel" inputmode="tel" dir="ltr" placeholder="9XXXXXXX">
 
-    <label class="l">الولايات اللي توصلها</label>
+    <label class="l" data-en="Wilayats you deliver to">الولايات اللي توصلها</label>
     <div class="govs" id="rGovs"></div>
-    <p class="hint">افتح المحافظة واختار الولايات، أو اختار «كل المحافظة».</p>
+    <p class="hint" data-en="Open a governorate and pick wilayats, or choose “Whole governorate”.">افتح المحافظة واختار الولايات، أو اختار «كل المحافظة».</p>
 
-    <label class="l">نوع الماي</label>
+    <label class="l" data-en="Water type">نوع الماي</label>
     <div class="chips" id="rTypes"></div>
 
-    <label class="l">الأحجام والأسعار (ر.ع)</label>
+    <label class="l" data-en="Sizes & prices (OMR)">الأحجام والأسعار (ر.ع)</label>
     <div class="prices" id="rPrices"></div>
-    <p class="hint">علّم الأحجام اللي عندك واكتب سعر كل حجم.</p>
+    <p class="hint" data-en="Tick the sizes you have and enter a price for each.">علّم الأحجام اللي عندك واكتب سعر كل حجم.</p>
 
-    <label class="l" for="rNote">ملاحظة (اختياري)</label>
-    <input class="fld" id="rNote" placeholder="مثال: متوفر من 6 الصبح لين 10 الليل">
+    <label class="l" for="rNote" data-en="Note (optional)">ملاحظة (اختياري)</label>
+    <input class="fld" id="rNote" placeholder="مثال: متوفر من 6 الصبح لين 10 الليل" data-enp="e.g. Available 6 am to 10 pm">
 
-    <p class="hint" style="font-size:.78rem;color:var(--muted);margin:16px 0 0;line-height:1.7">بالتسجيل توافق إن بياناتك صحيحة وما فيها أي محتوى مسيء أو مضلل. أي سايق يُبلَّغ عنه ويثبت عليه مخالفة يُحذف من التطبيق خلال 24 ساعة.</p>
+    <p class="hint" style="font-size:.78rem;color:var(--muted);margin:16px 0 0;line-height:1.7" data-en="By registering you confirm your details are accurate and contain nothing offensive or misleading. Any driver reported and found in violation is removed from the app within 24 hours.">بالتسجيل توافق إن بياناتك صحيحة وما فيها أي محتوى مسيء أو مضلل. أي سايق يُبلَّغ عنه ويثبت عليه مخالفة يُحذف من التطبيق خلال 24 ساعة.</p>
     <button class="btn" type="button" id="regSend" style="width:100%;justify-content:center;margin-top:12px">📤 أرسل التسجيل</button>
-    <button class="linkb" type="button" id="cancelEdit" hidden style="display:block;margin:10px auto 0">إلغاء التعديل</button>
+    <button class="linkb" type="button" id="cancelEdit" data-en="Cancel editing" hidden style="display:block;margin:10px auto 0">إلغاء التعديل</button>
     </div>
 
     <div id="vLogin" hidden>
-      <p class="hint">اكتب رقم جوالك ورمز الدخول اللي طلع لك وقت التسجيل. الدخول هنا داخل سُقيا، وما يحتاج واتساب ولا أي تطبيق ثاني.</p>
-      <label class="l" for="lPhone">رقم الجوال</label>
+      <p class="hint" data-en="Enter your phone number and the login code you got when you registered. Login happens inside Suqya — no WhatsApp or other app needed.">اكتب رقم جوالك ورمز الدخول اللي طلع لك وقت التسجيل. الدخول هنا داخل سُقيا، وما يحتاج واتساب ولا أي تطبيق ثاني.</p>
+      <label class="l" for="lPhone" data-en="Phone number">رقم الجوال</label>
       <input class="fld" id="lPhone" type="tel" inputmode="tel" dir="ltr" placeholder="9XXXXXXX">
-      <label class="l" for="lCode">رمز الدخول</label>
-      <input class="fld" id="lCode" dir="ltr" autocapitalize="characters" autocomplete="one-time-code" placeholder="مثال: 7F3A9C21" style="letter-spacing:.12em">
-      <button class="btn" type="button" id="loginBtn" style="width:100%;justify-content:center;margin-top:18px">دخول</button>
-      <p class="hint">نسيت الرمز؟ راسل إدارة سُقيا على <span dir="ltr">design.omani1@gmail.com</span>. <button class="linkb" type="button" id="toNew">سجّل صهريج جديد</button></p>
+      <label class="l" for="lCode" data-en="Login code">رمز الدخول</label>
+      <input class="fld" id="lCode" dir="ltr" autocapitalize="characters" autocomplete="one-time-code" placeholder="مثال: 7F3A9C21" data-enp="e.g. 7F3A9C21" style="letter-spacing:.12em">
+      <button class="btn" type="button" id="loginBtn" style="width:100%;justify-content:center;margin-top:18px" data-en="Log in">دخول</button>
+      <p class="hint" data-enh="Forgot your code? Email Suqya admin at <span dir=&quot;ltr&quot;>design.omani1@gmail.com</span>. <button class=&quot;linkb&quot; type=&quot;button&quot; id=&quot;toNew&quot;>Register a new tanker</button>">نسيت الرمز؟ راسل إدارة سُقيا على <span dir="ltr">design.omani1@gmail.com</span>. <button class="linkb" type="button" id="toNew">سجّل صهريج جديد</button></p>
     </div>
 
     <div id="vDone" hidden>
-      <div class="stat approved">✅ تم تسجيلك! صهريجك صار ظاهر للزبائن في ولاياتك من الحين.</div>
-      <p style="font-weight:800;margin:14px 0 0">رمز الدخول حقك:</p>
+      <div class="stat approved" data-en="✅ You're registered! Your tanker is now visible to customers in your wilayats.">✅ تم تسجيلك! صهريجك صار ظاهر للزبائن في ولاياتك من الحين.</div>
+      <p style="font-weight:800;margin:14px 0 0" data-en="Your login code:">رمز الدخول حقك:</p>
       <div class="codeBox" id="myCode"></div>
-      <p class="hint">⚠️ صوّر الشاشة أو احفظ الرمز. تحتاجه لو غيّرت جوالك أو حذفت التطبيق، عشان تعدّل أسعارك.</p>
+      <p class="hint" data-en="⚠️ Take a screenshot or save the code. You need it if you change phones or reinstall the app, to edit your prices.">⚠️ صوّر الشاشة أو احفظ الرمز. تحتاجه لو غيّرت جوالك أو حذفت التطبيق، عشان تعدّل أسعارك.</p>
       <div class="vstack">
-        <button class="btn" type="button" id="copyCode">📋 نسخ الرمز</button>
-        <button class="btn ghost" type="button" id="toAcct">حسابي ←</button>
+        <button class="btn" type="button" id="copyCode" data-en="📋 Copy code">📋 نسخ الرمز</button>
+        <button class="btn ghost" type="button" id="toAcct" data-en="My account →">حسابي ←</button>
       </div>
     </div>
 
     <div id="vAcct" hidden>
       <div class="stat" id="aStat"></div>
-      <label class="l">حالتك الحين</label>
-      <div class="avail"><button type="button" class="on" id="aOn">🟢 متوفر</button><button type="button" class="off" id="aOff">🔴 مشغول</button></div>
-      <p class="hint">لما تكون «مشغول» يظهر صهريجك للزبائن بس ما يقدرون يطلبون منك.</p>
-      <label class="l">بياناتي</label>
+      <label class="l" data-en="Your status now">حالتك الحين</label>
+      <div class="avail"><button type="button" class="on" id="aOn" data-en="🟢 Available">🟢 متوفر</button><button type="button" class="off" id="aOff" data-en="🔴 Busy">🔴 مشغول</button></div>
+      <p class="hint" data-en="When you're “Busy”, customers still see your tanker but can't order from you.">لما تكون «مشغول» يظهر صهريجك للزبائن بس ما يقدرون يطلبون منك.</p>
+      <label class="l" data-en="My details">بياناتي</label>
       <div class="sum" id="aSum"></div>
       <div class="vstack">
-        <button class="btn" type="button" id="aEdit">✏️ تعديل بياناتي وأسعاري</button>
-        <button class="btn ghost" type="button" id="aShowCode">🔑 عرض رمز الدخول</button>
-        <button class="linkb" type="button" id="aLogout">تسجيل خروج من هالجهاز</button>
-        <button class="linkb" type="button" id="aDelete" style="color:#c0392b">🗑️ حذف حسابي نهائيًا</button>
+        <button class="btn" type="button" id="aEdit" data-en="✏️ Edit my details & prices">✏️ تعديل بياناتي وأسعاري</button>
+        <button class="btn ghost" type="button" id="aShowCode" data-en="🔑 Show login code">🔑 عرض رمز الدخول</button>
+        <button class="linkb" type="button" id="aLogout" data-en="Log out on this device">تسجيل خروج من هالجهاز</button>
+        <button class="linkb" type="button" id="aDelete" style="color:#c0392b" data-en="🗑️ Delete my account permanently">🗑️ حذف حسابي نهائيًا</button>
       </div>
     </div>
   </div>
@@ -367,6 +377,38 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 <script src="config.js"></script>
 <script>
 const $ = id => document.getElementById(id);
+// ===== اللغة (عربي / English) =====
+const LANG = window.SUQYA_LANG || 'ar', EN = LANG === 'en';
+const L = (ar, en) => EN ? en : ar;
+(function applyStatic(){
+  $('langBtn').textContent = EN ? '🌐 عربي' : '🌐 English';
+  $('langBtn').onclick = () => { try{ localStorage.setItem('suqya-lang', EN ? 'ar' : 'en'); }catch(e){} location.reload(); };
+  if(!EN) return;
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const tn = [...el.childNodes].filter(n => n.nodeType === 3 && n.textContent.trim());
+    if(tn.length) tn[tn.length - 1].textContent = (tn.length === 1 && el.children.length ? ' ' : '') + el.dataset.en; else el.textContent = el.dataset.en;
+  });
+  document.querySelectorAll('[data-enh]').forEach(el => el.innerHTML = el.dataset.enh);
+  document.querySelectorAll('[data-enp]').forEach(el => el.placeholder = el.dataset.enp);
+  document.querySelectorAll('[data-ena]').forEach(el => el.setAttribute('aria-label', el.dataset.ena));
+})();
+const GN = {"مسقط":"Muscat","مطرح":"Muttrah","بوشر":"Bawshar","السيب":"Seeb","العامرات":"Al Amerat","قريات":"Quriyat",
+ "ظفار":"Dhofar","صلالة":"Salalah","طاقة":"Taqah","مرباط":"Mirbat","رخيوت":"Rakhyut","ثمريت":"Thumrait","ضلكوت":"Dhalkut","المزيونة":"Al Mazyunah","مقشن":"Muqshin","شليم وجزر الحلانيات":"Shalim & Hallaniyat Islands","سدح":"Sadah",
+ "مسندم":"Musandam","خصب":"Khasab","دبا":"Dibba","بخا":"Bukha","مدحاء":"Madha",
+ "البريمي":"Al Buraimi","محضة":"Mahdah","السنينة":"As Sunaynah",
+ "الداخلية":"Ad Dakhiliyah","نزوى":"Nizwa","بهلاء":"Bahla","منح":"Manah","الحمراء":"Al Hamra","أدم":"Adam","إزكي":"Izki","سمائل":"Samail","بدبد":"Bidbid","الجبل الأخضر":"Al Jabal Al Akhdar",
+ "شمال الباطنة":"North Al Batinah","صحار":"Sohar","شناص":"Shinas","لوى":"Liwa","صحم":"Saham","الخابورة":"Al Khaburah","السويق":"As Suwaiq",
+ "جنوب الباطنة":"South Al Batinah","الرستاق":"Rustaq","العوابي":"Al Awabi","نخل":"Nakhal","وادي المعاول":"Wadi Al Maawil","بركاء":"Barka","المصنعة":"Al Musanaah",
+ "جنوب الشرقية":"South Ash Sharqiyah","صور":"Sur","الكامل والوافي":"Al Kamil Wal Wafi","جعلان بني بو حسن":"Jalan Bani Bu Hassan","جعلان بني بو علي":"Jalan Bani Bu Ali","مصيرة":"Masirah",
+ "شمال الشرقية":"North Ash Sharqiyah","إبراء":"Ibra","المضيبي":"Al Mudaybi","بدية":"Bidiyah","القابل":"Al Qabil","وادي بني خالد":"Wadi Bani Khalid","دماء والطائيين":"Dima Wa At Taiyin",
+ "الظاهرة":"Ad Dhahirah","عبري":"Ibri","ينقل":"Yanqul","ضنك":"Dhank",
+ "الوسطى":"Al Wusta","هيماء":"Haima","محوت":"Mahout","الدقم":"Duqm","الجازر":"Al Jazir"};
+const gn = x => EN ? (GN[x] || x) : x;
+const SZ_EN = {650:'Extra small', 1000:'Small', 2000:'Medium', 3000:'Large', 5000:'Extra large'};
+const TY_EN = {drink:'Drinking water (sweet)', use:'Utility water (washing, farming, building)'};
+const szLabel = s => EN ? (SZ_EN[s.gal] || s.label) : s.label;
+const tyLabel = t => EN ? (TY_EN[t.id] || t.label) : t.label;
+const GAL = L(' جالون', ' gal'), OMR = L('ر.ع', 'OMR');
 function toast(t){ const e = $('toast'); e.textContent = t; e.classList.add('show'); clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove('show'), 2600); }
 const store = { get(k, d){ try{ const v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? d : v; }catch(e){ return d; } }, set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} } };
 
@@ -374,9 +416,9 @@ const SB = window.SUQYA_SB || {}, LIVE = !!(SB.url && SB.key);
 async function rpc(fn, args){
   let r;
   try{ r = await fetch(SB.url + '/rest/v1/rpc/' + fn, { method:'POST', headers:{ apikey:SB.key, 'Content-Type':'application/json' }, body:JSON.stringify(args || {}) }); }
-  catch(e){ throw new Error('ما فيه اتصال بالإنترنت، حاول مرة ثانية'); }
+  catch(e){ throw new Error(L('ما فيه اتصال بالإنترنت، حاول مرة ثانية', 'No internet connection, please try again')); }
   const t = await r.text(); let j = null; try{ j = t ? JSON.parse(t) : null; }catch(e){}
-  if(!r.ok) throw new Error((j && j.message) || 'صار خطأ، حاول مرة ثانية');
+  if(!r.ok) throw new Error((j && j.message) || L('صار خطأ، حاول مرة ثانية', 'Something went wrong, please try again'));
   return j;
 }
 const numPrices = p => Object.fromEntries(Object.entries(p || {}).map(([k, v]) => [k, +v]));
@@ -397,47 +439,47 @@ const omr = n => (Math.round(n * 1000) / 1000).toLocaleString('en', { maximumFra
 function renderControls(){
   const G = DATA.governorates || {};
   const g = $('gov'); g.replaceChildren();
-  const g0 = document.createElement('option'); g0.value = ''; g0.textContent = 'المحافظة…'; g.append(g0);
-  Object.keys(G).forEach(x => { const o = document.createElement('option'); o.value = x; o.textContent = x; g.append(o); });
+  const g0 = document.createElement('option'); g0.value = ''; g0.textContent = L('المحافظة…', 'Governorate…'); g.append(g0);
+  Object.keys(G).forEach(x => { const o = document.createElement('option'); o.value = x; o.textContent = gn(x); g.append(o); });
   if(!G[S.gov]) S.gov = Object.keys(G).find(k => G[k].includes(S.area)) || '';
   g.value = S.gov;
   const a = $('area'); a.replaceChildren();
-  const o0 = document.createElement('option'); o0.value = ''; o0.textContent = S.gov ? 'الولاية…' : 'اختار المحافظة أول'; a.append(o0);
-  (G[S.gov] || []).forEach(x => { const o = document.createElement('option'); o.value = x; o.textContent = x; a.append(o); });
+  const o0 = document.createElement('option'); o0.value = ''; o0.textContent = S.gov ? L('الولاية…', 'Wilayat…') : L('اختار المحافظة أول', 'Pick a governorate first'); a.append(o0);
+  (G[S.gov] || []).forEach(x => { const o = document.createElement('option'); o.value = x; o.textContent = gn(x); a.append(o); });
   a.disabled = !S.gov;
   if(!(G[S.gov] || []).includes(S.area)) S.area = '';
   a.value = S.area;
   const sz = $('sizes'); sz.replaceChildren();
   DATA.sizes.forEach(s => {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.setAttribute('aria-pressed', String(s.gal === S.gal));
-    b.innerHTML = '<b>' + s.gal.toLocaleString('en') + '</b><small>جالون · ' + s.label + '</small>';
+    b.innerHTML = '<b>' + s.gal.toLocaleString('en') + '</b><small>' + L('جالون · ', 'gal · ') + szLabel(s) + '</small>';
     b.onclick = () => { S.gal = s.gal; renderControls(); renderDrivers(); };
     sz.append(b);
   });
   const ty = $('types'); ty.replaceChildren();
   DATA.types.forEach(t => {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.setAttribute('aria-pressed', String(t.id === S.type));
-    b.textContent = t.label; b.onclick = () => { S.type = t.id; renderControls(); renderDrivers(); };
+    b.textContent = tyLabel(t); b.onclick = () => { S.type = t.id; renderControls(); renderDrivers(); };
     ty.append(b);
   });
 }
 
 function covers(d){ return d.areas.includes(S.area) || d.areas.includes('gov:' + S.gov); }
-function areaText(d){ return d.areas.map(a => a.startsWith('gov:') ? 'كل ' + a.slice(4) : a).join('، '); }
+function areaText(d){ return d.areas.map(a => a.startsWith('gov:') ? L('كل ', 'All ') + gn(a.slice(4)) : gn(a)).join(L('، ', ', ')); }
 function dkey(d){ return String(d.id || d.whatsapp || d.phone || d.name); }
 function hiddenSet(){ return new Set(store.get('suqya_hidden', [])); }
 function hideDriver(d){
-  if(!confirm('إخفاء «' + d.name + '»؟ ما بيطلع لك في القائمة بعد كذا.')) return;
+  if(!confirm(L('إخفاء «' + d.name + '»؟ ما بيطلع لك في القائمة بعد كذا.', 'Hide “' + d.name + '”? They won\'t show in your list anymore.'))) return;
   const h = hiddenSet(); h.add(dkey(d)); store.set('suqya_hidden', [...h]); renderDrivers();
 }
 async function reportDriver(d){
-  const why = prompt('ليش تبلّغ عن «' + d.name + '»؟ (محتوى غير لائق، رقم غلط، احتيال…)');
+  const why = prompt(L('ليش تبلّغ عن «' + d.name + '»؟ (محتوى غير لائق، رقم غلط، احتيال…)', 'Why are you reporting “' + d.name + '”? (inappropriate content, wrong number, fraud…)'));
   if(why == null) return;
   if(LIVE && d.id){
-    try{ await rpc('report_driver', { p_id:d.id, p_reason:why.trim() }); toast('وصل البلاغ لإدارة سُقيا، شكرًا لك 🙏'); return; }catch(e){}
+    try{ await rpc('report_driver', { p_id:d.id, p_reason:why.trim() }); toast(L('وصل البلاغ لإدارة سُقيا، شكرًا لك 🙏', 'Report sent to Suqya admin, thank you 🙏')); return; }catch(e){}
   }
   const msg = ['🚩 بلاغ عن سايق في سُقيا', '', '• السايق: ' + d.name, '• المعرّف: ' + dkey(d), '• السبب: ' + (why.trim() || 'بدون تفاصيل')].join('\n');
-  openSheet('🚩 بلاغ', msg, 'ما قدرنا نرسل البلاغ الحين. انسخه وأرسله لإدارة سُقيا: واتساب 96894005400 أو design.omani1@gmail.com');
+  openSheet(L('🚩 بلاغ', '🚩 Report'), msg, L('ما قدرنا نرسل البلاغ الحين. انسخه وأرسله لإدارة سُقيا: واتساب 96894005400 أو design.omani1@gmail.com', 'We couldn\'t send the report right now. Copy it and send it to Suqya admin: WhatsApp 96894005400 or design.omani1@gmail.com'));
 }
 function matches(){
   const hid = hiddenSet();
@@ -448,39 +490,39 @@ function matches(){
 function renderDrivers(){
   const box = $('drivers'); box.replaceChildren();
   $('demoBar').hidden = !DATA.drivers.length || !DATA.drivers.every(d => d.demo);
-  if(!S.area){ $('resCount').textContent = ''; const e = document.createElement('div'); e.className = 'empty'; e.textContent = 'اختار المحافظة والولاية فوق عشان نطلع لك الصهاريج اللي توصل لك 📍'; box.append(e); return; }
+  if(!S.area){ $('resCount').textContent = ''; const e = document.createElement('div'); e.className = 'empty'; e.textContent = L('اختار المحافظة والولاية فوق عشان نطلع لك الصهاريج اللي توصل لك 📍', 'Pick your governorate and wilayat above to see the tankers that deliver to you 📍'); box.append(e); return; }
   const list = matches();
   $('resCount').textContent = list.length ? '(' + list.length + ')' : '';
   if(!list.length){
     const e = document.createElement('div'); e.className = 'empty';
-    e.innerHTML = 'ما فيه صهريج مسجّل في <b></b> لهالحجم والنوع حاليًا.<br>جرّب حجم ثاني، أو ارجع بعدين، قاعدين نضيف سوّاقين كل يوم 🚛';
-    e.querySelector('b').textContent = S.area; box.append(e); hidNote(box); return;
+    e.innerHTML = L('ما فيه صهريج مسجّل في <b></b> لهالحجم والنوع حاليًا.<br>جرّب حجم ثاني، أو ارجع بعدين، قاعدين نضيف سوّاقين كل يوم 🚛', 'No tanker is registered in <b></b> for this size and type yet.<br>Try another size or check back later — we add drivers every day 🚛');
+    e.querySelector('b').textContent = gn(S.area); box.append(e); hidNote(box); return;
   }
   list.forEach((d, i) => {
     const busy = d.available === false;
     const el = document.createElement('article'); el.className = 'drv' + (busy ? ' busy' : '');
     const info = document.createElement('div');
     const h = document.createElement('h3'); h.textContent = d.name;
-    if(busy){ const t = document.createElement('span'); t.className = 'tag busy'; t.textContent = 'مشغول الحين'; h.append(t); }
-    else if(i === 0 && list.filter(x => x.available !== false).length > 1){ const t = document.createElement('span'); t.className = 'tag'; t.textContent = 'الأرخص'; h.append(t); }
+    if(busy){ const t = document.createElement('span'); t.className = 'tag busy'; t.textContent = L('مشغول الحين', 'Busy now'); h.append(t); }
+    else if(i === 0 && list.filter(x => x.available !== false).length > 1){ const t = document.createElement('span'); t.className = 'tag'; t.textContent = L('الأرخص', 'Cheapest'); h.append(t); }
     const m = document.createElement('div'); m.className = 'meta';
-    m.textContent = [d.note, 'يغطي: ' + areaText(d)].filter(Boolean).join(' · ');
+    m.textContent = [d.note, L('يغطي: ', 'Covers: ') + areaText(d)].filter(Boolean).join(' · ');
     info.append(h, m);
     const pr = document.createElement('div'); pr.className = 'price';
-    pr.innerHTML = '<b>' + omr(d.prices[String(S.gal)]) + '</b><span>ر.ع' + (d.demo ? ' · تجريبي' : '') + '</span>';
+    pr.innerHTML = '<b>' + omr(d.prices[String(S.gal)]) + '</b><span>' + OMR + (d.demo ? L(' · تجريبي', ' · demo') : '') + '</span>';
     const go = document.createElement('div'); go.className = 'go';
-    const b = document.createElement('button'); b.type = 'button'; b.className = 'btn wa'; b.innerHTML = '💬 اطلب من الواتساب';
-    if(busy){ b.disabled = true; b.textContent = '⏳ مشغول الحين — جرّب بعدين'; } else b.onclick = () => order(d, 'wa');
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'btn wa'; b.innerHTML = L('💬 اطلب من الواتساب', '💬 Order on WhatsApp');
+    if(busy){ b.disabled = true; b.textContent = L('⏳ مشغول الحين — جرّب بعدين', '⏳ Busy now — try later'); } else b.onclick = () => order(d, 'wa');
     go.append(b);
     if(!busy){
       const alt = document.createElement('div'); alt.className = 'alt';
-      const c = document.createElement('button'); c.type = 'button'; c.className = 'btn ghost'; c.textContent = '📞 اتصال'; c.onclick = () => order(d, 'call');
-      const t = document.createElement('button'); t.type = 'button'; t.className = 'btn ghost'; t.textContent = '✉️ رسالة نصية'; t.onclick = () => order(d, 'sms');
+      const c = document.createElement('button'); c.type = 'button'; c.className = 'btn ghost'; c.textContent = L('📞 اتصال', '📞 Call'); c.onclick = () => order(d, 'call');
+      const t = document.createElement('button'); t.type = 'button'; t.className = 'btn ghost'; t.textContent = L('✉️ رسالة نصية', '✉️ SMS'); t.onclick = () => order(d, 'sms');
       alt.append(c, t); go.append(alt);
     }
     const mod = document.createElement('div'); mod.className = 'mod';
-    const rp = document.createElement('button'); rp.type = 'button'; rp.textContent = '🚩 إبلاغ'; rp.onclick = () => reportDriver(d);
-    const hd = document.createElement('button'); hd.type = 'button'; hd.textContent = '🚫 إخفاء'; hd.onclick = () => hideDriver(d);
+    const rp = document.createElement('button'); rp.type = 'button'; rp.textContent = L('🚩 إبلاغ', '🚩 Report'); rp.onclick = () => reportDriver(d);
+    const hd = document.createElement('button'); hd.type = 'button'; hd.textContent = L('🚫 إخفاء', '🚫 Hide'); hd.onclick = () => hideDriver(d);
     mod.append(rp, hd);
     el.append(info, pr, go, mod); box.append(el);
   });
@@ -488,11 +530,24 @@ function renderDrivers(){
 }
 function hidNote(box){
   const nh = store.get('suqya_hidden', []).length;
-  if(nh){ const n = document.createElement('div'); n.className = 'hidnote'; n.innerHTML = 'مخفي عندك ' + nh + ' سايق · <button type="button">إظهارهم</button>'; n.querySelector('button').onclick = () => { store.set('suqya_hidden', []); renderDrivers(); }; box.append(n); }
+  if(nh){ const n = document.createElement('div'); n.className = 'hidnote'; n.innerHTML = L('مخفي عندك ' + nh + ' سايق · <button type="button">إظهارهم</button>', nh + ' hidden driver(s) · <button type="button">Show them</button>'); n.querySelector('button').onclick = () => { store.set('suqya_hidden', []); renderDrivers(); }; box.append(n); }
 }
 
 function orderText(d){
   const size = DATA.sizes.find(s => s.gal === S.gal), type = DATA.types.find(t => t.id === S.type);
+  const tw = $('when').selectedOptions[0].textContent + ' — ' + $('slot').selectedOptions[0].textContent;
+  if(EN){
+    const en = ['Hello, I need a water tanker via Suqya 🚛💧', '',
+      '• Size: ' + S.gal.toLocaleString('en') + ' gallons' + (size ? ' (' + szLabel(size) + ')' : ''),
+      '• Type: ' + (type ? tyLabel(type) : ''),
+      '• Area: ' + gn(S.area) + ' (' + S.area + ') — ' + gn(S.gov),
+      $('addr').value.trim() ? '• Address: ' + $('addr').value.trim() : '',
+      S.lat ? '• Location: https://maps.google.com/?q=' + S.lat.toFixed(6) + ',' + S.lng.toFixed(6) : '',
+      '• Time: ' + tw,
+      '• Listed price: ' + omr(d.prices[String(S.gal)]) + ' OMR',
+      $('cname').value.trim() ? '• Name: ' + $('cname').value.trim() : ''];
+    return en.filter((x, i) => x !== '' || i === 1).join('\n');
+  }
   const lines = [
     'السلام عليكم، أبي صهريج ماي عن طريق سُقيا 🚛💧',
     '',
@@ -501,7 +556,7 @@ function orderText(d){
     '• المنطقة: ' + S.area + ' — محافظة ' + S.gov,
     $('addr').value.trim() ? '• العنوان: ' + $('addr').value.trim() : '',
     S.lat ? '• الموقع: https://maps.google.com/?q=' + S.lat.toFixed(6) + ',' + S.lng.toFixed(6) : '',
-    '• الوقت: ' + $('when').value + ' — ' + $('slot').value,
+    '• الوقت: ' + tw,
     '• السعر المعروض: ' + omr(d.prices[String(S.gal)]) + ' ر.ع',
     $('cname').value.trim() ? '• الاسم: ' + $('cname').value.trim() : ''
   ];
@@ -510,13 +565,13 @@ function orderText(d){
 
 function order(d, via){
   via = via || 'wa';
-  if(!S.lat && !$('addr').value.trim()){ toast('حدد موقعك أو اكتب العنوان عشان يعرف السايق وين يوصل'); $('addr').focus(); return; }
+  if(!S.lat && !$('addr').value.trim()){ toast(L('حدد موقعك أو اكتب العنوان عشان يعرف السايق وين يوصل', 'Share your location or type your address so the driver knows where to go')); $('addr').focus(); return; }
   store.set('suqya-last', { gov:S.gov, area:S.area, gal:S.gal, type:S.type });
   const msg = orderText(d);
   const phone = normPhone(d.phone);
   if(via === 'call' && phone.length >= 10 && !d.demo){ window.location.href = 'tel:+' + phone; return; }
   if(d.demo || phone.length < 10){
-    openSheet('🧪 هذا طلب تجريبي', msg, 'هذا الصهريج مثال للتجربة، فالطلب ما انرسل لأحد. هذي الرسالة اللي بتوصل السايق لما يكون مسجّل.');
+    openSheet(L('🧪 هذا طلب تجريبي', '🧪 This is a demo order'), msg, L('هذا الصهريج مثال للتجربة، فالطلب ما انرسل لأحد. هذي الرسالة اللي بتوصل السايق لما يكون مسجّل.', 'This tanker is a demo example, so the order wasn\'t sent to anyone. This is the message a registered driver would receive.'));
     return;
   }
   try{ localStorage.setItem('suqya-orders', String((+localStorage.getItem('suqya-orders') || 0) + 1)); }catch(e){}
@@ -527,17 +582,17 @@ function order(d, via){
 function openSheet(title, msg, note){ $('sheetTitle').textContent = title; $('sheetMsg').textContent = msg; $('sheetNote').textContent = note || ''; $('sheet').classList.add('show'); }
 $('closeSheet').onclick = () => $('sheet').classList.remove('show');
 $('sheet').addEventListener('click', e => { if(e.target.id === 'sheet') $('sheet').classList.remove('show'); });
-$('copyMsg').onclick = () => { navigator.clipboard?.writeText($('sheetMsg').textContent).then(() => toast('انسخت ✅'), () => toast('ما قدرت أنسخ')); };
+$('copyMsg').onclick = () => { navigator.clipboard?.writeText($('sheetMsg').textContent).then(() => toast(L('انسخت ✅', 'Copied ✅')), () => toast(L('ما قدرت أنسخ', 'Couldn\'t copy'))); };
 
 $('gov').onchange = e => { S.gov = e.target.value; S.area = ''; renderControls(); renderDrivers(); };
 $('area').onchange = e => { S.area = e.target.value; renderDrivers(); };
 $('gps').onclick = () => {
-  if(!navigator.geolocation){ toast('جهازك ما يدعم تحديد الموقع'); return; }
-  $('locTxt').className = 'locTxt'; $('locTxt').textContent = 'جاري تحديد موقعك…';
+  if(!navigator.geolocation){ toast(L('جهازك ما يدعم تحديد الموقع', 'Your device doesn\'t support location')); return; }
+  $('locTxt').className = 'locTxt'; $('locTxt').textContent = L('جاري تحديد موقعك…', 'Finding your location…');
   navigator.geolocation.getCurrentPosition(p => {
     S.lat = p.coords.latitude; S.lng = p.coords.longitude;
-    $('locTxt').className = 'locTxt ok'; $('locTxt').textContent = '✅ تم تحديد موقعك (دقة تقريبية ' + Math.round(p.coords.accuracy) + ' م) وبينرسل مع الطلب';
-  }, () => { $('locTxt').className = 'locTxt'; $('locTxt').textContent = 'ما قدرنا نحدد موقعك. اكتب العنوان بدال.'; }, { enableHighAccuracy:true, timeout:12000 });
+    $('locTxt').className = 'locTxt ok'; $('locTxt').textContent = L('✅ تم تحديد موقعك (دقة تقريبية ' + Math.round(p.coords.accuracy) + ' م) وبينرسل مع الطلب', '✅ Location found (about ' + Math.round(p.coords.accuracy) + ' m accuracy) — it will be sent with your order');
+  }, () => { $('locTxt').className = 'locTxt'; $('locTxt').textContent = L('ما قدرنا نحدد موقعك. اكتب العنوان بدال.', 'Couldn\'t get your location. Please type your address instead.'); }, { enableHighAccuracy:true, timeout:12000 });
 };
 
 const R = store.get('suqya-reg', { name:'', phone:'', areas:[], types:['drink'], prices:{}, note:'' });
@@ -548,12 +603,12 @@ function renderReg(){
   const G = DATA.governorates || {}, box = $('rGovs'); box.replaceChildren();
   Object.keys(G).forEach(g => {
     const d = document.createElement('details'), sm = document.createElement('summary'), cnt = document.createElement('span'); cnt.className = 'n';
-    const t = document.createElement('span'); t.textContent = g; sm.append(t, cnt);
+    const t = document.createElement('span'); t.textContent = gn(g); sm.append(t, cnt);
     const wl = document.createElement('div'); wl.className = 'wl';
     const mk = (val, text, all) => { const l = document.createElement('label'); l.className = 'ck' + (all ? ' all' : ''); const i = document.createElement('input'); i.type = 'checkbox'; i.value = val; i.checked = R.areas.includes(val); l.append(i, document.createTextNode(text)); wl.append(l); return i; };
-    const all = mk('gov:' + g, 'كل المحافظة', true);
-    const ws = G[g].map(w => mk(w, w));
-    const paint = () => { ws.forEach(i => { i.disabled = all.checked; i.parentNode.style.opacity = all.checked ? .5 : 1; }); const k = all.checked ? 'الكل' : ws.filter(i => i.checked).length; cnt.textContent = k ? '✓ ' + k : ''; };
+    const all = mk('gov:' + g, L('كل المحافظة', 'Whole governorate'), true);
+    const ws = G[g].map(w => mk(w, gn(w)));
+    const paint = () => { ws.forEach(i => { i.disabled = all.checked; i.parentNode.style.opacity = all.checked ? .5 : 1; }); const k = all.checked ? L('الكل', 'All') : ws.filter(i => i.checked).length; cnt.textContent = k ? '✓ ' + k : ''; };
     wl.addEventListener('change', e => {
       const v = e.target.value; R.areas = R.areas.filter(a => a !== v); if(e.target.checked) R.areas.push(v);
       if(all.checked) R.areas = R.areas.filter(a => !G[g].includes(a));
@@ -562,41 +617,41 @@ function renderReg(){
     paint(); d.append(sm, wl); box.append(d);
   });
   const ty = $('rTypes'); ty.replaceChildren();
-  DATA.types.forEach(t => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = t.label; b.setAttribute('aria-pressed', R.types.includes(t.id));
+  DATA.types.forEach(t => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = tyLabel(t); b.setAttribute('aria-pressed', R.types.includes(t.id));
     b.onclick = () => { R.types = R.types.includes(t.id) ? R.types.filter(x => x !== t.id) : R.types.concat(t.id); b.setAttribute('aria-pressed', R.types.includes(t.id)); if(MODE === 'new') store.set('suqya-reg', R); }; ty.append(b); });
   const pr = $('rPrices'); pr.replaceChildren();
   DATA.sizes.forEach(z => { const k = String(z.gal), row = document.createElement('div'); row.className = 'prow';
-    const l = document.createElement('label'); l.className = 'ck'; const c = document.createElement('input'); c.type = 'checkbox'; c.checked = k in R.prices; l.append(c, document.createTextNode(z.gal.toLocaleString('en') + ' جالون'));
-    const i = document.createElement('input'); i.className = 'fld'; i.type = 'number'; i.inputMode = 'decimal'; i.min = '0'; i.step = '0.5'; i.placeholder = 'السعر'; i.dir = 'ltr'; i.value = R.prices[k] ?? ''; i.disabled = !c.checked;
+    const l = document.createElement('label'); l.className = 'ck'; const c = document.createElement('input'); c.type = 'checkbox'; c.checked = k in R.prices; l.append(c, document.createTextNode(z.gal.toLocaleString('en') + GAL));
+    const i = document.createElement('input'); i.className = 'fld'; i.type = 'number'; i.inputMode = 'decimal'; i.min = '0'; i.step = '0.5'; i.placeholder = L('السعر', 'Price'); i.dir = 'ltr'; i.value = R.prices[k] ?? ''; i.disabled = !c.checked;
     c.onchange = () => { i.disabled = !c.checked; if(c.checked){ R.prices[k] = i.value === '' ? null : +i.value; i.focus(); } else delete R.prices[k]; if(MODE === 'new') store.set('suqya-reg', R); };
     i.oninput = () => { R.prices[k] = i.value === '' ? null : +i.value; if(MODE === 'new') store.set('suqya-reg', R); };
     row.append(l, i); pr.append(row); });
-  $('regTitle').textContent = MODE === 'edit' ? '✏️ تعديل بياناتي' : '🚛 سجّل كسايق صهريج';
-  $('regSend').textContent = MODE === 'edit' ? '💾 حفظ التعديلات' : '📤 أرسل التسجيل';
+  $('regTitle').textContent = MODE === 'edit' ? L('✏️ تعديل بياناتي', '✏️ Edit my details') : L('🚛 سجّل كسايق صهريج', '🚛 Register as a tanker driver');
+  $('regSend').textContent = MODE === 'edit' ? L('💾 حفظ التعديلات', '💾 Save changes') : L('📤 أرسل التسجيل', '📤 Submit registration');
   $('regIntro').hidden = MODE === 'edit'; $('toLogin').hidden = !LIVE || MODE === 'edit'; $('cancelEdit').hidden = MODE !== 'edit';
 }
 ['rName','rPhone','rNote'].forEach(id => $(id).addEventListener('input', e => { R[{rName:'name',rPhone:'phone',rNote:'note'}[id]] = e.target.value; if(MODE === 'new') store.set('suqya-reg', R); }));
 
 function view(v){ ['vForm','vLogin','vDone','vAcct'].forEach(x => $(x).hidden = x !== v); $('reg').scrollTop = 0;
-  if(v === 'vLogin') $('regTitle').textContent = '🔑 دخول السايق';
-  if(v === 'vDone') $('regTitle').textContent = '🎉 أهلًا فيك في سُقيا';
-  if(v === 'vAcct') $('regTitle').textContent = '🚛 حسابي'; }
+  if(v === 'vLogin') $('regTitle').textContent = L('🔑 دخول السايق', '🔑 Driver login');
+  if(v === 'vDone') $('regTitle').textContent = L('🎉 أهلًا فيك في سُقيا', '🎉 Welcome to Suqya');
+  if(v === 'vAcct') $('regTitle').textContent = L('🚛 حسابي', '🚛 My account'); }
 function showForm(mode){ MODE = mode; renderReg(); view('vForm'); }
 function paintAcct(){
   const a = ACCT, st = $('aStat');
   st.className = 'stat ' + a.status;
-  st.textContent = { pending:'⏳ تسجيلك قيد المراجعة — بيظهر صهريجك للزبائن أول ما توافق الإدارة.', approved:'✅ حسابك فعّال، وصهريجك ظاهر للزبائن.', blocked:'⛔ حسابك موقوف — تواصل مع إدارة سُقيا.' }[a.status] || a.status;
+  st.textContent = (EN ? { pending:'⏳ Your registration is under review — your tanker will show to customers once admin approves.', approved:'✅ Your account is active and your tanker is visible to customers.', blocked:'⛔ Your account is suspended — contact Suqya admin.' } : { pending:'⏳ تسجيلك قيد المراجعة — بيظهر صهريجك للزبائن أول ما توافق الإدارة.', approved:'✅ حسابك فعّال، وصهريجك ظاهر للزبائن.', blocked:'⛔ حسابك موقوف — تواصل مع إدارة سُقيا.' })[a.status] || a.status;
   $('aOn').setAttribute('aria-pressed', a.available); $('aOff').setAttribute('aria-pressed', !a.available);
-  const tl = id => (DATA.types.find(t => t.id === id) || {}).label || id;
+  const tl = id => { const t = DATA.types.find(t => t.id === id); return t ? tyLabel(t) : id; };
   const sum = $('aSum'); sum.replaceChildren();
-  [['الاسم', a.name], ['الرقم', '\u2066+' + a.phone + '\u2069'], ['المناطق', areaText(a)], ['نوع الماي', a.types.map(tl).join(' + ')],
-   ['الأسعار', Object.keys(a.prices).sort((x, y) => x - y).map(k => (+k).toLocaleString('en') + ' جالون: ' + omr(+a.prices[k]) + ' ر.ع').join(' · ')],
-   a.note ? ['ملاحظة', a.note] : null].filter(Boolean).forEach(([k, v]) => { const d = document.createElement('div'); const b = document.createElement('b'); b.textContent = k + ': '; d.append(b, document.createTextNode(v)); sum.append(d); });
+  [[L('الاسم', 'Name'), a.name], [L('الرقم', 'Phone'), '\u2066+' + a.phone + '\u2069'], [L('المناطق', 'Areas'), areaText(a)], [L('نوع الماي', 'Water type'), a.types.map(tl).join(' + ')],
+   [L('الأسعار', 'Prices'), Object.keys(a.prices).sort((x, y) => x - y).map(k => (+k).toLocaleString('en') + GAL + ': ' + omr(+a.prices[k]) + ' ' + OMR).join(' · ')],
+   a.note ? [L('ملاحظة', 'Note'), a.note] : null].filter(Boolean).forEach(([k, v]) => { const d = document.createElement('div'); const b = document.createElement('b'); b.textContent = k + ': '; d.append(b, document.createTextNode(v)); sum.append(d); });
 }
 async function loadAcct(){
-  view('vAcct'); $('aStat').className = 'stat'; $('aStat').textContent = 'جاري التحميل…'; $('aSum').textContent = '';
+  view('vAcct'); $('aStat').className = 'stat'; $('aStat').textContent = L('جاري التحميل…', 'Loading…'); $('aSum').textContent = '';
   try{ ACCT = await rpc('driver_get', { p_phone:ME.phone, p_code:ME.code }); paintAcct(); }
-  catch(e){ toast(e.message); if(/غلط/.test(e.message)){ ME = null; store.set('suqya-me', null); view('vLogin'); } }
+  catch(e){ toast(e.message); if(/غلط|wrong|invalid/i.test(e.message)){ ME = null; store.set('suqya-me', null); view('vLogin'); } }
 }
 function openReg(){
   if(LIVE && ME) loadAcct(); else { ACCT = null; showForm('new'); }
@@ -610,44 +665,44 @@ $('toNew').onclick = () => showForm('new');
 $('cancelEdit').onclick = () => { if(ME && ACCT && ACCT.status) { view('vAcct'); paintAcct(); } else showForm('new'); };
 $('loginBtn').onclick = async () => {
   const phone = normPhone($('lPhone').value), code = $('lCode').value.trim().toUpperCase();
-  if(phone.length < 11 || code.length < 6){ toast('اكتب الرقم ورمز الدخول'); return; }
+  if(phone.length < 11 || code.length < 6){ toast(L('اكتب الرقم ورمز الدخول', 'Enter your number and login code')); return; }
   $('loginBtn').disabled = true;
   try{ ACCT = await rpc('driver_get', { p_phone:phone, p_code:code }); ME = { phone, code }; store.set('suqya-me', ME); view('vAcct'); paintAcct(); }
   catch(e){ toast(e.message); }
   $('loginBtn').disabled = false;
 };
-$('copyCode').onclick = () => navigator.clipboard?.writeText(ME.code).then(() => toast('انسخ الرمز ✅'), () => toast('ما قدرت أنسخ — صوّر الشاشة'));
+$('copyCode').onclick = () => navigator.clipboard?.writeText(ME.code).then(() => toast(L('انسخ الرمز ✅', 'Code copied ✅')), () => toast(L('ما قدرت أنسخ — صوّر الشاشة', 'Couldn\'t copy — take a screenshot')));
 $('toAcct').onclick = loadAcct;
 async function setAvail(v){
   if(!ME || !ACCT || ACCT.available === v) return;
-  try{ ACCT = await rpc('driver_set_available', { p_phone:ME.phone, p_code:ME.code, p_available:v }); paintAcct(); toast(v ? 'صرت متوفر 🟢' : 'صرت مشغول 🔴'); refreshDrivers(); }
+  try{ ACCT = await rpc('driver_set_available', { p_phone:ME.phone, p_code:ME.code, p_available:v }); paintAcct(); toast(v ? L('صرت متوفر 🟢', 'You\'re available 🟢') : L('صرت مشغول 🔴', 'You\'re busy 🔴')); refreshDrivers(); }
   catch(e){ toast(e.message); }
 }
 $('aOn').onclick = () => setAvail(true); $('aOff').onclick = () => setAvail(false);
 $('aEdit').onclick = () => { if(!ME || !ACCT || !ACCT.status){ showForm('new'); return; } Object.assign(R, { name:ACCT.name, phone:ACCT.phone.replace(/^968/, ''), areas:[...ACCT.areas], types:[...ACCT.types], prices:numPrices(ACCT.prices), note:ACCT.note || '' }); showForm('edit'); };
-$('aShowCode').onclick = () => { if(!ME){ showForm('new'); return; } $('myCode').textContent = ME.code; view('vDone'); $('regTitle').textContent = '🔑 رمز الدخول'; $('vDone').querySelector('.stat').hidden = true; };
+$('aShowCode').onclick = () => { if(!ME){ showForm('new'); return; } $('myCode').textContent = ME.code; view('vDone'); $('regTitle').textContent = L('🔑 رمز الدخول', '🔑 Login code'); $('vDone').querySelector('.stat').hidden = true; };
 $('aDelete').onclick = async () => {
   if(!ME){ showForm('new'); return; }
-  if(!confirm('متأكد تبغى تحذف حسابك؟ بتنحذف كل بياناتك ويختفي صهريجك من التطبيق نهائيًا.')) return;
-  try{ await rpc('driver_delete', { p_phone:ME.phone, p_code:ME.code }); ME = null; ACCT = null; store.set('suqya-me', null); toast('انحذف حسابك ✅'); refreshDrivers(); closeReg(); }
+  if(!confirm(L('متأكد تبغى تحذف حسابك؟ بتنحذف كل بياناتك ويختفي صهريجك من التطبيق نهائيًا.', 'Delete your account? All your data will be deleted and your tanker removed from the app permanently.'))) return;
+  try{ await rpc('driver_delete', { p_phone:ME.phone, p_code:ME.code }); ME = null; ACCT = null; store.set('suqya-me', null); toast(L('انحذف حسابك ✅', 'Your account was deleted ✅')); refreshDrivers(); closeReg(); }
   catch(e){ toast(e.message); }
 };
-$('aLogout').onclick = () => { if(!ME){ showForm('new'); return; } if(!confirm('متأكد؟ بتحتاج رمز الدخول عشان ترجع تدخل.')) return; ME = null; ACCT = null; store.set('suqya-me', null); showForm('new'); };
+$('aLogout').onclick = () => { if(!ME){ showForm('new'); return; } if(!confirm(L('متأكد؟ بتحتاج رمز الدخول عشان ترجع تدخل.', 'Sure? You\'ll need your login code to sign back in.'))) return; ME = null; ACCT = null; store.set('suqya-me', null); showForm('new'); };
 
 $('regSend').onclick = async () => {
   const name = R.name.trim(), phone = normPhone(R.phone), sizes = Object.keys(R.prices);
-  if(!name){ toast('اكتب اسمك أول'); $('rName').focus(); return; }
-  if(phone.length < 11){ toast('رقم الجوال لازم يكون 8 أرقام (مثال: 9XXXXXXX)'); $('rPhone').focus(); return; }
-  if(!R.areas.length){ toast('اختار ولاية وحدة على الأقل'); return; }
-  if(!R.types.length){ toast('اختار نوع الماي'); return; }
-  if(!sizes.length || sizes.some(k => !(R.prices[k] > 0))){ toast('علّم حجم واحد على الأقل واكتب سعره'); return; }
+  if(!name){ toast(L('اكتب اسمك أول', 'Enter your name first')); $('rName').focus(); return; }
+  if(phone.length < 11){ toast(L('رقم الجوال لازم يكون 8 أرقام (مثال: 9XXXXXXX)', 'Phone number must be 8 digits (e.g. 9XXXXXXX)')); $('rPhone').focus(); return; }
+  if(!R.areas.length){ toast(L('اختار ولاية وحدة على الأقل', 'Pick at least one wilayat')); return; }
+  if(!R.types.length){ toast(L('اختار نوع الماي', 'Pick the water type')); return; }
+  if(!sizes.length || sizes.some(k => !(R.prices[k] > 0))){ toast(L('علّم حجم واحد على الأقل واكتب سعره', 'Tick at least one size and enter its price')); return; }
   if(LIVE){
     const args = { p_name:name, p_areas:R.areas, p_types:R.types, p_prices:R.prices, p_note:R.note.trim() };
     $('regSend').disabled = true;
     try{
       if(MODE === 'edit'){
         ACCT = await rpc('driver_update', { ...args, p_phone:ME.phone, p_code:ME.code, p_available:ACCT.available });
-        toast('انحفظت التعديلات ✅'); view('vAcct'); paintAcct(); refreshDrivers();
+        toast(L('انحفظت التعديلات ✅', 'Changes saved ✅')); view('vAcct'); paintAcct(); refreshDrivers();
       } else {
         const r = await rpc('register_driver', { ...args, p_phone:phone });
         ME = { phone, code:r.code }; store.set('suqya-me', ME); store.set('suqya-reg', null);
@@ -668,10 +723,10 @@ $('regSend').onclick = async () => {
   const msg = lines.filter((x, i) => x !== '' || i === 1).join('\n');
   const admin = normPhone(DATA.admin && DATA.admin.whatsapp);
   if(admin.length >= 10){ window.location.href = 'https://wa.me/' + admin + '?text=' + encodeURIComponent(msg); return; }
-  openSheet('تسجيلك جاهز ✅', msg, 'انسخ الرسالة وأرسلها لإدارة سُقيا.');
+  openSheet(L('تسجيلك جاهز ✅', 'Your registration is ready ✅'), msg, L('انسخ الرسالة وأرسلها لإدارة سُقيا.', 'Copy the message and send it to Suqya admin.'));
 };
 
-$('shareApp').onclick = () => { const id = (window.SUQYA_APP || {}).appleId; shareKit({ title:'شارك سُقيا', text:'💧🚛 سُقيا: اطلب صهريج ماي لين باب بيتك. شوف الأسعار القريبة واطلب بضغطة 👇', url:id ? 'https://apps.apple.com/app/id' + id : 'https://shmmuh8-design.github.io/Suqya/' }); };
+$('shareApp').onclick = () => { const id = (window.SUQYA_APP || {}).appleId; shareKit({ title:L('شارك سُقيا', 'Share Suqya'), text:L('💧🚛 سُقيا: اطلب صهريج ماي لين باب بيتك. شوف الأسعار القريبة واطلب بضغطة 👇', '💧🚛 Suqya: get a water tanker to your doorstep in Oman. Compare nearby prices and order in one tap 👇'), url:id ? 'https://apps.apple.com/app/id' + id : 'https://shmmuh8-design.github.io/Suqya/' }); };
 
 if(window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform()){
   $('oldLink').remove();
@@ -702,7 +757,7 @@ fetch('drivers.json', { cache:'no-store' }).then(r => r.ok ? r.json() : null).th
 <!-- share kit: window.shareKit({ title, text, url }) — WhatsApp, Instagram, Snapchat, Facebook, X, copy, more -->
 <style>
 .shk-scrim{position:fixed;inset:0;z-index:9990;background:rgba(10,12,16,.55);display:flex;align-items:flex-end;justify-content:center}
-.shk{width:min(560px,100%);background:#fff;color:#16181d;border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));font-family:inherit;direction:rtl;animation:shkUp .22s ease-out}
+.shk{width:min(560px,100%);background:#fff;color:#16181d;border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));font-family:inherit;animation:shkUp .22s ease-out}
 @keyframes shkUp{from{transform:translateY(40px);opacity:0}}
 .shk h3{margin:0 0 4px;font-size:1.1rem;font-weight:800}
 .shk p{margin:0 0 14px;font-size:.88rem;color:#5d636e;overflow-wrap:anywhere}
@@ -725,9 +780,10 @@ fetch('drivers.json', { cache:'no-store' }).then(r => r.ok ? r.json() : null).th
     cp:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>',
     more:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>'
   };
+  const EN = window.SUQYA_LANG === 'en', T = (a, e) => EN ? e : a;
   const B = [
-    ['wa','واتساب','#25d366'], ['ig','إنستقرام','linear-gradient(45deg,#f9a825,#e1306c 50%,#833ab4)'], ['sc','سناب شات','#fffc00'],
-    ['fb','فيسبوك','#1877f2'], ['x','X تويتر','#000'], ['cp','نسخ الرابط','#6b7280'], ['more','المزيد','#3b82f6']
+    ['wa',T('واتساب','WhatsApp'),'#25d366'], ['ig',T('إنستقرام','Instagram'),'linear-gradient(45deg,#f9a825,#e1306c 50%,#833ab4)'], ['sc',T('سناب شات','Snapchat'),'#fffc00'],
+    ['fb',T('فيسبوك','Facebook'),'#1877f2'], ['x',T('X تويتر','X'),'#000'], ['cp',T('نسخ الرابط','Copy link'),'#6b7280'], ['more',T('المزيد','More'),'#3b82f6']
   ];
   function toast(m){ const t = document.createElement('div'); t.className = 'shk-t'; t.textContent = m; document.body.append(t); setTimeout(() => t.remove(), 3200); }
   function copy(s){ return (navigator.clipboard ? navigator.clipboard.writeText(s) : Promise.reject()).catch(() => { const a = document.createElement('textarea'); a.value = s; document.body.append(a); a.select(); try{ document.execCommand('copy'); }catch(e){} a.remove(); }); }
@@ -736,7 +792,7 @@ fetch('drivers.json', { cache:'no-store' }).then(r => r.ok ? r.json() : null).th
     const url = o.url, text = o.text || '', full = text + (url ? '\n' + url : ''), E = encodeURIComponent;
     const s = document.createElement('div'); s.className = 'shk-scrim';
     const k = document.createElement('div'); k.className = 'shk'; k.setAttribute('role', 'dialog');
-    const h = document.createElement('h3'); h.textContent = '📤 ' + (o.title || 'مشاركة');
+    const h = document.createElement('h3'); h.textContent = '📤 ' + (o.title || T('مشاركة', 'Share'));
     const p = document.createElement('p'); p.textContent = full;
     const g = document.createElement('div'); g.className = 'shk-g';
     B.forEach(([id, n, bg]) => {
@@ -749,14 +805,14 @@ fetch('drivers.json', { cache:'no-store' }).then(r => r.ok ? r.json() : null).th
         else if(id === 'fb') go('https://www.facebook.com/sharer/sharer.php?u=' + E(url) + '&quote=' + E(text));
         else if(id === 'x') go('https://x.com/intent/post?text=' + E(text) + '&url=' + E(url));
         else if(id === 'sc') go('https://www.snapchat.com/scan?attachmentUrl=' + E(url));
-        else if(id === 'ig'){ copy(full).then(() => { toast('انسخ الرابط ✅ الصقه في الستوري أو الرسالة بإنستقرام'); setTimeout(() => go('https://www.instagram.com/'), 1200); }); }
-        else if(id === 'cp'){ copy(full).then(() => toast('انسخ الرابط ✅')); }
+        else if(id === 'ig'){ copy(full).then(() => { toast(T('انسخ الرابط ✅ الصقه في الستوري أو الرسالة بإنستقرام', 'Link copied ✅ Paste it in your Instagram story or message')); setTimeout(() => go('https://www.instagram.com/'), 1200); }); }
+        else if(id === 'cp'){ copy(full).then(() => toast(T('انسخ الرابط ✅', 'Link copied ✅'))); }
         else if(id === 'more'){ navigator.share({ title:o.title, text, url }).catch(() => {}); }
         if(id !== 'ig') s.remove(); else setTimeout(() => s.remove(), 1200);
       };
       g.append(b);
     });
-    const x = document.createElement('button'); x.className = 'shk-x'; x.type = 'button'; x.textContent = 'إغلاق'; x.onclick = () => s.remove();
+    const x = document.createElement('button'); x.className = 'shk-x'; x.type = 'button'; x.textContent = T('إغلاق', 'Close'); x.onclick = () => s.remove();
     s.onclick = e => { if(e.target === s) s.remove(); };
     k.append(h, p, g, x); s.append(k); document.body.append(s);
   };
