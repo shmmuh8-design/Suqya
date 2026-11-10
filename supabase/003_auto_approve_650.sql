@@ -1,4 +1,4 @@
--- سُقيا: السايق يظهر على طول بعد التسجيل (بدون موافقة المدير) + حجم 650 جالون
+-- سُقيا: السائق يظهر على طول بعد التسجيل (بدون موافقة المدير) + حجم 650 جالون
 -- الصقه في SQL Editor واضغط Run
 alter table public.drivers alter column status set default 'approved';
 update public.drivers set status = 'approved' where status = 'pending';

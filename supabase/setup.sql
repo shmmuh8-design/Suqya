@@ -1,4 +1,4 @@
--- سُقيا: قاعدة بيانات السواقين — انسخ الملف كامل والصقه في SQL Editor واضغط Run
+-- سُقيا: قاعدة بيانات السائقين — انسخ الملف كامل والصقه في SQL Editor واضغط Run
 create extension if not exists pgcrypto with schema extensions;
 
 create table if not exists public.drivers (

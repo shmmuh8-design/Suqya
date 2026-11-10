@@ -29,7 +29,7 @@ if(window.SUQYA_LANG === 'en'){ document.documentElement.lang = 'en'; document.d
 :root[data-theme="dark"]{--bg:#0d1719; --surface:#142226; --fg:#e7f1f0; --muted:#97aaae; --line:#22363a; --brand:#1593a3; --brand-2:#19a9bb; color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html,body{overflow-x:hidden}
+html,body{overflow-x:clip}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;
   padding:0 0 calc(env(safe-area-inset-bottom) + 40px)}
 .wrap{max-width:560px;margin:0 auto;padding:0 16px;display:flex;flex-direction:column;gap:16px}
@@ -286,7 +286,7 @@ h3.sec{margin:6px 0 -4px;font-size:1.1rem}
     <div class="tools">
       <button type="button" id="langBtn" class="langB" aria-label="Language / اللغة">🌐 EN</button>
       <button type="button" id="shareApp" class="langB" data-en="📤">📤</button>
-      <button class="drvTop" type="button" id="drvTop" data-en="🚛 Driver">🚛 سايق</button>
+      <button class="drvTop" type="button" id="drvTop" data-en="🚛 Driver">🚛 سائق</button>
     </div>
   </div>
 </header>
@@ -308,10 +308,6 @@ h3.sec{margin:6px 0 -4px;font-size:1.1rem}
 
   <div class="tiles" id="tiles"></div>
 
-  <button class="glass mapcard" type="button" id="mapCta">
-    <div><h3 data-en="Coverage across Oman">تغطية في كل عُمان</h3><p data-en="See how many tankers serve each wilayat on the map.">شوف كم صهريج يخدم كل ولاية على الخريطة.</p><span class="btn sm ghost" data-en="🗺️ Open map">🗺️ عرض الخريطة</span></div>
-    <svg class="mini" viewBox="0 0 200 120" aria-hidden="true"><path d="M150 14l8 8 12 4 10 12 6 10-8 12-14 8-18 6-16 14-30 12-26 4-14-6 10-14 26-6 18-14 10-18 4-14 8-10z" fill="#0b3f7a" stroke="#5fd0ff" stroke-width="1.6"/><g fill="#5fd0ff"><path d="M150 40c-4-5-7-8-7-12a7 7 0 0 1 14 0c0 4-3 7-7 12z"/><path d="M118 70c-4-5-7-8-7-12a7 7 0 0 1 14 0c0 4-3 7-7 12z"/><path d="M84 92c-4-5-7-8-7-12a7 7 0 0 1 14 0c0 4-3 7-7 12z"/></g></svg>
-  </button>
 
   <div class="feats">
     <div class="feat" data-en="Nearest tanker to your area"><b>📍</b>أقرب صهريج لمنطقتك</div>
@@ -321,7 +317,7 @@ h3.sec{margin:6px 0 -4px;font-size:1.1rem}
   <section class="card join" id="join">
     <h2 data-en="Got a tanker? 🚛">عندك صهريج؟ 🚛</h2>
     <p data-en="Register on Suqya and get customer orders in your area directly by call, SMS or WhatsApp.">سجّل في سُقيا وتوصلك طلبات الزبائن في منطقتك مباشرة باتصال أو رسالة أو واتساب.</p>
-    <button class="btn" type="button" id="joinBtn" data-en="Register as a tanker driver">سجّل كسايق صهريج</button>
+    <button class="btn" type="button" id="joinBtn" data-en="Register as a tanker driver">سجّل كسائق صهريج</button>
   </section>
   <footer data-enh="Suqya — order your tanker<br>© Salem Aljabri — Muscat, Sultanate of Oman<br><a href=&quot;https://techlights.app&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; dir=&quot;ltr&quot; style=&quot;color:inherit;font-weight:700&quot;>🌐 techlights.app</a><br><a href=&quot;privacy.html#en&quot; style=&quot;color:var(--muted)&quot;>Privacy Policy</a><span id=&quot;rateLink&quot; hidden><br><a id=&quot;rateA&quot; href=&quot;#&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; style=&quot;color:var(--brand);font-weight:700&quot;>⭐ Enjoying Suqya? Rate it on the App Store</a></span><span id=&quot;oldLink&quot;><br><a href=&quot;old/&quot; style=&quot;color:var(--muted)&quot;>Old version of Suqya</a></span>">سُقيا — اطلب صهريجك<br>© سالم الجابري — مسقط، سلطنة عُمان<br><a href="https://techlights.app" target="_blank" rel="noopener" dir="ltr" style="color:inherit;font-weight:700">🌐 techlights.app</a><br><a href="privacy.html" style="color:var(--muted)">سياسة الخصوصية</a><span id="rateLink" hidden><br><a id="rateA" href="#" target="_blank" rel="noopener" style="color:var(--brand);font-weight:700">⭐ عجبك سُقيا؟ قيّمه في App Store</a></span><span id="oldLink"><br><a href="old/" style="color:var(--muted)">النسخة القديمة من سُقيا</a></span></footer>
 </section>
@@ -378,12 +374,6 @@ h3.sec{margin:6px 0 -4px;font-size:1.1rem}
   </section>
 </section>
 
-<section class="view" id="v-map" hidden>
-  <h1 class="vtitle" data-en="Tankers on the map">الصهاريج على الخريطة</h1>
-  <p class="vsub" data-en="The number on a pin is how many tankers deliver to that wilayat.">الرقم على الدبوس هو عدد الصهاريج اللي توصل للولاية.</p>
-  <div class="gchips" id="govChips"></div>
-  <div class="glass mapwrap"><div id="mapBox"></div><div class="mapinfo" id="mapInfo"></div></div>
-</section>
 
 <section class="view" id="v-hist" hidden>
   <h1 class="vtitle" data-en="My orders">طلباتي</h1>
@@ -406,7 +396,7 @@ h3.sec{margin:6px 0 -4px;font-size:1.1rem}
 </div>
 <div class="reg" id="reg" role="dialog" aria-modal="true" aria-labelledby="regTitle">
   <div class="wrapR">
-    <div class="head"><h2 id="regTitle">🚛 سجّل كسايق صهريج</h2><button class="x" type="button" id="regClose" aria-label="إغلاق" data-ena="Close">✕</button></div>
+    <div class="head"><h2 id="regTitle">🚛 سجّل كسائق صهريج</h2><button class="x" type="button" id="regClose" aria-label="إغلاق" data-ena="Close">✕</button></div>
     <div id="vForm">
     <p class="hint" id="regIntro" data-en="Fill in your details and your tanker shows up right away for customers in the wilayats you pick. Their orders reach you directly by call, SMS or WhatsApp.">عبّ بياناتك، وعلى طول يظهر صهريجك للزبائن في الولايات اللي تختارها، وطلباتهم توصلك مباشرة باتصال أو رسالة أو واتساب.</p>
     <button class="linkb" type="button" id="toLogin" hidden data-en="Already registered? Log in →">مسجّل من قبل؟ ادخل لحسابك ←</button>
@@ -431,7 +421,7 @@ h3.sec{margin:6px 0 -4px;font-size:1.1rem}
     <label class="l" for="rNote" data-en="Note (optional)">ملاحظة (اختياري)</label>
     <input class="fld" id="rNote" placeholder="مثال: متوفر من 6 الصبح لين 10 الليل" data-enp="e.g. Available 6 am to 10 pm">
 
-    <p class="hint" style="font-size:.78rem;color:var(--muted);margin:16px 0 0;line-height:1.7" data-en="By registering you confirm your details are accurate and contain nothing offensive or misleading. Any driver reported and found in violation is removed from the app within 24 hours.">بالتسجيل توافق إن بياناتك صحيحة وما فيها أي محتوى مسيء أو مضلل. أي سايق يُبلَّغ عنه ويثبت عليه مخالفة يُحذف من التطبيق خلال 24 ساعة.</p>
+    <p class="hint" style="font-size:.78rem;color:var(--muted);margin:16px 0 0;line-height:1.7" data-en="By registering you confirm your details are accurate and contain nothing offensive or misleading. Any driver reported and found in violation is removed from the app within 24 hours.">بالتسجيل توافق إن بياناتك صحيحة وما فيها أي محتوى مسيء أو مضلل. أي سائق يُبلَّغ عنه ويثبت عليه مخالفة يُحذف من التطبيق خلال 24 ساعة.</p>
     <button class="btn" type="button" id="regSend" style="width:100%;justify-content:center;margin-top:12px">📤 أرسل التسجيل</button>
     <button class="linkb" type="button" id="cancelEdit" data-en="Cancel editing" hidden style="display:block;margin:10px auto 0">إلغاء التعديل</button>
     </div>
@@ -579,7 +569,7 @@ async function reportDriver(d){
   if(LIVE && d.id){
     try{ await rpc('report_driver', { p_id:d.id, p_reason:why.trim() }); toast(L('وصل البلاغ لإدارة سُقيا، شكرًا لك 🙏', 'Report sent to Suqya admin, thank you 🙏')); return; }catch(e){}
   }
-  const msg = ['🚩 بلاغ عن سايق في سُقيا', '', '• السايق: ' + d.name, '• المعرّف: ' + dkey(d), '• السبب: ' + (why.trim() || 'بدون تفاصيل')].join('\n');
+  const msg = ['🚩 بلاغ عن سائق في سُقيا', '', '• السائق: ' + d.name, '• المعرّف: ' + dkey(d), '• السبب: ' + (why.trim() || 'بدون تفاصيل')].join('\n');
   openSheet(L('🚩 بلاغ', '🚩 Report'), msg, L('ما قدرنا نرسل البلاغ الحين. انسخه وأرسله لإدارة سُقيا: واتساب 96894005400 أو design.omani1@gmail.com', 'We couldn\'t send the report right now. Copy it and send it to Suqya admin: WhatsApp 96894005400 or design.omani1@gmail.com'));
 }
 function matches(){
@@ -634,7 +624,7 @@ function renderDrivers0(){
 }
 function hidNote(box){
   const nh = store.get('suqya_hidden', []).length;
-  if(nh){ const n = document.createElement('div'); n.className = 'hidnote'; n.innerHTML = L('مخفي عندك ' + nh + ' سايق · <button type="button">إظهارهم</button>', nh + ' hidden driver(s) · <button type="button">Show them</button>'); n.querySelector('button').onclick = () => { store.set('suqya_hidden', []); renderDrivers(); }; box.append(n); }
+  if(nh){ const n = document.createElement('div'); n.className = 'hidnote'; n.innerHTML = L('مخفي عندك ' + nh + ' سائق · <button type="button">إظهارهم</button>', nh + ' hidden driver(s) · <button type="button">Show them</button>'); n.querySelector('button').onclick = () => { store.set('suqya_hidden', []); renderDrivers(); }; box.append(n); }
 }
 
 function orderText(d){
@@ -669,14 +659,14 @@ function orderText(d){
 
 function order(d, via){
   via = via || 'wa';
-  if(!S.lat && !$('addr').value.trim()){ toast(L('حدد موقعك أو اكتب العنوان عشان يعرف السايق وين يوصل', 'Share your location or type your address so the driver knows where to go')); $('addr').focus(); return; }
+  if(!S.lat && !$('addr').value.trim()){ toast(L('حدد موقعك أو اكتب العنوان عشان يعرف السائق وين يوصل', 'Share your location or type your address so the driver knows where to go')); $('addr').focus(); return; }
   store.set('suqya-last', { gov:S.gov, area:S.area, gal:S.gal, type:S.type });
   const msg = orderText(d);
   const phone = normPhone(d.phone);
   if(!d.demo && phone.length >= 10 && window.SUI_log) SUI_log(d, via);
   if(via === 'call' && phone.length >= 10 && !d.demo){ window.location.href = 'tel:+' + phone; return; }
   if(d.demo || phone.length < 10){
-    openSheet(L('🧪 هذا طلب تجريبي', '🧪 This is a demo order'), msg, L('هذا الصهريج مثال للتجربة، فالطلب ما انرسل لأحد. هذي الرسالة اللي بتوصل السايق لما يكون مسجّل.', 'This tanker is a demo example, so the order wasn\'t sent to anyone. This is the message a registered driver would receive.'));
+    openSheet(L('🧪 هذا طلب تجريبي', '🧪 This is a demo order'), msg, L('هذا الصهريج مثال للتجربة، فالطلب ما انرسل لأحد. هذي الرسالة اللي بتوصل السائق لما يكون مسجّل.', 'This tanker is a demo example, so the order wasn\'t sent to anyone. This is the message a registered driver would receive.'));
     return;
   }
   try{ localStorage.setItem('suqya-orders', String((+localStorage.getItem('suqya-orders') || 0) + 1)); }catch(e){}
@@ -731,14 +721,14 @@ function renderReg(){
     c.onchange = () => { i.disabled = !c.checked; if(c.checked){ R.prices[k] = i.value === '' ? null : +i.value; i.focus(); } else delete R.prices[k]; if(MODE === 'new') store.set('suqya-reg', R); };
     i.oninput = () => { R.prices[k] = i.value === '' ? null : +i.value; if(MODE === 'new') store.set('suqya-reg', R); };
     row.append(l, i); pr.append(row); });
-  $('regTitle').textContent = MODE === 'edit' ? L('✏️ تعديل بياناتي', '✏️ Edit my details') : L('🚛 سجّل كسايق صهريج', '🚛 Register as a tanker driver');
+  $('regTitle').textContent = MODE === 'edit' ? L('✏️ تعديل بياناتي', '✏️ Edit my details') : L('🚛 سجّل كسائق صهريج', '🚛 Register as a tanker driver');
   $('regSend').textContent = MODE === 'edit' ? L('💾 حفظ التعديلات', '💾 Save changes') : L('📤 أرسل التسجيل', '📤 Submit registration');
   $('regIntro').hidden = MODE === 'edit'; $('toLogin').hidden = !LIVE || MODE === 'edit'; $('cancelEdit').hidden = MODE !== 'edit';
 }
 ['rName','rPhone','rNote'].forEach(id => $(id).addEventListener('input', e => { R[{rName:'name',rPhone:'phone',rNote:'note'}[id]] = e.target.value; if(MODE === 'new') store.set('suqya-reg', R); }));
 
 function view(v){ ['vForm','vLogin','vDone','vAcct'].forEach(x => $(x).hidden = x !== v); $('reg').scrollTop = 0;
-  if(v === 'vLogin') $('regTitle').textContent = L('🔑 دخول السايق', '🔑 Driver login');
+  if(v === 'vLogin') $('regTitle').textContent = L('🔑 دخول السائق', '🔑 Driver login');
   if(v === 'vDone') $('regTitle').textContent = L('🎉 أهلًا فيك في سُقيا', '🎉 Welcome to Suqya');
   if(v === 'vAcct') $('regTitle').textContent = L('🚛 حسابي', '🚛 My account'); }
 function showForm(mode){ MODE = mode; renderReg(); view('vForm'); }
@@ -846,7 +836,7 @@ if(window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform(
   document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible') maybeReview(); });
 }
 renderControls(); renderDrivers();
-if(/^#(driver|sayeq|سايق)$/.test(decodeURIComponent(location.hash))) openReg();
+if(/^#(driver|sayeq|سائق)$/.test(decodeURIComponent(location.hash))) openReg();
 let DEMO = [];
 async function refreshDrivers(){
   if(!LIVE) return;

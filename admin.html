@@ -60,7 +60,7 @@ a.wa{color:#1f9d55;font-weight:800;text-decoration:none;direction:ltr;display:in
 
   <div id="panel" hidden>
     <div class="top">
-      <div><h1>🚛 سواقين سُقيا</h1><p class="sub">وافق على السواقين الجدد عشان يظهرون للزبائن.</p></div>
+      <div><h1>🚛 سائقين سُقيا</h1><p class="sub">وافق على السائقين الجدد عشان يظهرون للزبائن.</p></div>
       <button class="btn ghost" type="button" id="reload" aria-label="تحديث">↻</button>
     </div>
     <div class="tabs" id="tabs">
@@ -111,7 +111,7 @@ function paint(){
   document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-pressed', b.dataset.t === TAB));
   const box = $('list'); box.replaceChildren();
   const rows = ROWS.filter(r => r.status === TAB);
-  if(!rows.length){ const e = document.createElement('div'); e.className = 'empty'; e.textContent = { pending:'ما فيه تسجيلات جديدة 👌', approved:'ما فيه سواقين معتمدين للحين.', blocked:'ما فيه أحد موقوف.' }[TAB]; box.append(e); return; }
+  if(!rows.length){ const e = document.createElement('div'); e.className = 'empty'; e.textContent = { pending:'ما فيه تسجيلات جديدة 👌', approved:'ما فيه سائقين معتمدين للحين.', blocked:'ما فيه أحد موقوف.' }[TAB]; box.append(e); return; }
   rows.forEach(r => {
     const el = document.createElement('article'); el.className = 'drv';
     const h = document.createElement('h3'); h.textContent = r.name;

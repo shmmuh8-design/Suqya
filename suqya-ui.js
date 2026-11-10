@@ -137,7 +137,7 @@ const fmtDays = d => d < 1 ? L('أقل من يوم','Under a day') : EN ? '≈ '
 function histView(){
   const box = $('histBody'); box.replaceChildren();
   const f = favs(), fl = DATA.drivers.filter(d => f.has(dkey(d)));
-  box.append(mk('h3','sec', L('⭐ سايقي المفضّل','⭐ My favourite drivers')));
+  box.append(mk('h3','sec', L('⭐ سائقي المفضّل','⭐ My favourite drivers')));
   if(!fl.length) box.append(mk('div','empty', L('اضغط ⭐ على أي صهريج في قائمة الطلب عشان يطلع هنا وأول القائمة.','Tap ⭐ on any tanker in the order list to keep it here and at the top.')));
   fl.forEach(d => {
     const c = mk('div','glass hrow');
@@ -175,6 +175,8 @@ function homeDraw(){
 let CUR = 'home';
 function go(name){
   if(name === 'acct'){ openReg(); return; }
+  if(name === 'calc'){ calc(); return; }
+  if(name === 'map') name = 'order';
   CUR = name;
   document.querySelectorAll('.view').forEach(v => v.hidden = v.id !== 'v-' + name);
   document.querySelectorAll('#tabbar [data-go]').forEach(b => b.setAttribute('aria-current', b.dataset.go === name ? 'page' : 'false'));
@@ -184,16 +186,15 @@ function go(name){
   if(name === 'home') homeDraw();
 }
 window.go = go;
-const items = [['home','home',L('الرئيسية','Home')],['map','truck',L('الصهاريج','Tankers')],['order','drop',L('طلب جديد','New order')],['hist','list',L('طلباتي','My orders')],['acct','user',L('حسابي','Account')]];
+const items = [['home','home',L('الرئيسية','Home')],['calc','calc',L('الحاسبة','Calculator')],['order','drop',L('طلب جديد','New order')],['hist','list',L('طلباتي','My orders')],['acct','user',L('حسابي','Account')]];
 $('tabbar').innerHTML = items.map(([k, i, t]) => `<button type="button" data-go="${k}" class="${k==='order'?'mid':''}">${k==='order'?'<span class="bubble">'+ic(i)+'</span>':ic(i)}<span>${t}</span></button>`).join('');
 $('tabbar').onclick = e => { const b = e.target.closest('[data-go]'); if(b) go(b.dataset.go); };
 $('heroGo').onclick = () => go('order');
-$('mapCta').onclick = () => go('map');
-const tiles = [['calc',L('حاسبة احتياج المياه','Water calculator'),calc],['truck',L('الصهاريج المتاحة','Available tankers'),()=>go('map')],['list',L('طلباتي','My orders'),()=>go('hist')],['star',L('سايقي المفضّل','Favourite drivers'),()=>go('hist')]];
+const tiles = [['calc',L('حاسبة احتياج المياه','Water calculator'),calc],['truck',L('الصهاريج المتاحة','Available tankers'),()=>go('order')],['list',L('طلباتي','My orders'),()=>go('hist')],['star',L('سائقي المفضّل','Favourite drivers'),()=>go('hist')]];
 $('tiles').replaceChildren(...tiles.map(([i, t, f]) => { const b = mk('button','tile'); b.type = 'button'; b.onclick = f; b.innerHTML = `<span class="tile-i">${ic(i)}</span>`; b.append(mk('span', null, t)); return b; }));
 window.SUI = {
   after(){ homeDraw(); if(CUR === 'map'){ drawMap(); mapInfo(); } if(CUR === 'hist') histView(); }
 };
 SUI.after();
-go(/^#(order|map|hist)$/.test(location.hash) ? location.hash.slice(1) : 'home');
+go(/^#(order|hist)$/.test(location.hash) ? location.hash.slice(1) : 'home');
 })();
