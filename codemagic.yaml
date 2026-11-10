@@ -62,14 +62,14 @@ workflows:
 
   suqya-android:
     name: سُقيا — أندرويد
-    max_build_duration: 45
-    instance_type: linux_x2
+    max_build_duration: 60
+    instance_type: mac_mini_m2
     working_directory: ios-app
     environment:
       android_signing:
         - suqya_keystore                  # ملف المفتاح اللي ترفعه في Codemagic ← Code signing identities ← Android keystores
       node: 20
-      java: 17
+      java: 21
     scripts:
       - name: تثبيت الحزم وتجهيز الملفات
         script: |
@@ -80,17 +80,22 @@ workflows:
           [ -d android ] || npx cap add android
           npm run assets:android
           npx cap sync android
-      - name: الصلاحيات والإصدار والتوقيع
+      - name: صلاحية الموقع
         script: |
           M=android/app/src/main/AndroidManifest.xml
           grep -q ACCESS_FINE_LOCATION $M || sed -i 's|<uses-permission android:name="android.permission.INTERNET" />|<uses-permission android:name="android.permission.INTERNET" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />|' $M
-          G=android/app/build.gradle
-          sed -i "s/versionCode [0-9]*/versionCode $((BUILD_NUMBER + 1))/" $G
-          sed -i 's/versionName "[^"]*"/versionName "1.0"/' $G
-          cat >> $G <<'GRADLE'
-
-          android {
-              signingConfigs {
+          grep -n "permission" $M
+      - name: التوقيع ورقم الإصدار
+        script: |
+          python3 - <<'PY'
+          import os, re
+          p = 'android/app/build.gradle'
+          s = open(p).read()
+          code = int(os.environ.get('BUILD_NUMBER', '1')) + 1
+          s = re.sub(r'versionCode \d+', 'versionCode %d' % code, s)
+          s = re.sub(r'versionName "[^"]*"', 'versionName "1.1"', s)
+          if 'signingConfigs' not in s:
+              s = s.replace('    buildTypes {', '''    signingConfigs {
                   release {
                       storeFile file(System.getenv("CM_KEYSTORE_PATH"))
                       storePassword System.getenv("CM_KEYSTORE_PASSWORD")
@@ -98,14 +103,33 @@ workflows:
                       keyPassword System.getenv("CM_KEY_PASSWORD")
                   }
               }
-              buildTypes { release { signingConfig signingConfigs.release } }
-          }
-          GRADLE
-      - name: بناء ملف AAB
+              buildTypes {''', 1)
+              s = re.sub(r'(buildTypes \{\s*release \{)', r'\1\n            signingConfig signingConfigs.release', s, count=1)
+          open(p, 'w').write(s)
+          assert 'signingConfig signingConfigs.release' in s, 'signing not applied'
+          # جوجل بلاي تطلب minSdk 24 أو أعلى (Play automatic protection)
+          v = 'android/variables.gradle'
+          t = open(v).read()
+          t = re.sub(r'minSdkVersion\s*=\s*\d+', 'minSdkVersion = 24', t)
+          # جوجل بلاي تطلب targetSdk 36 (Android 16)
+          t = re.sub(r'compileSdkVersion\s*=\s*\d+', 'compileSdkVersion = 36', t)
+          t = re.sub(r'targetSdkVersion\s*=\s*\d+', 'targetSdkVersion = 36', t)
+          open(v, 'w').write(t)
+          assert 'minSdkVersion = 24' in t and 'targetSdkVersion = 36' in t, 'sdk versions not applied'
+          gp = 'android/gradle.properties'
+          g = open(gp).read()
+          if 'suppressUnsupportedCompileSdk' not in g:
+              open(gp, 'a').write('\nandroid.suppressUnsupportedCompileSdk=36\n')
+          print('versionCode', code)
+          PY
+          grep -n "versionCode\|signingConfig\|CM_KEY" android/app/build.gradle; grep -n "SdkVersion" android/variables.gradle
+      - name: بناء ملف AAB و APK (جوجل بلاي + هواوي + سامسونج)
         script: |
           cd android
           chmod +x gradlew
-          ./gradlew bundleRelease
+          ./gradlew bundleRelease assembleRelease
     artifacts:
-      - ios-app/android/app/build/outputs/bundle/release/*.aab
-      - android/app/build/outputs/bundle/release/*.aab
+      - android/app/build/outputs/**/*.aab
+      - ios-app/android/app/build/outputs/**/*.aab
+      - android/app/build/outputs/**/*.apk
+      - ios-app/android/app/build/outputs/**/*.apk
