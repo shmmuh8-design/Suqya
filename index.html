@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0B6E7A">
+<meta name="theme-color" content="#05234d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="سُقيا">
 <meta name="description" content="اطلب صهريج ماي لين باب بيتك في سلطنة عُمان">
@@ -151,88 +151,183 @@ footer{text-align:center;font-size:.78rem;color:var(--muted);line-height:1.8}
 button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--sun);outline-offset:2px}
 @media (max-width:380px){.sizes{grid-template-columns:repeat(2,minmax(0,1fr))}.hero h1{font-size:1.5rem}}
 </style>
+<style>
+/* ===== Suqya 2: deep-blue water glass ===== */
+:root:root:root:not([data-zz]){--bg:#05234d;--surface:#0b3366;--fg:#eaf6ff;--muted:#9cc3e6;--line:rgba(120,200,255,.22);--brand:#2bb5f0;--brand-2:#5fd0ff;--brand-fg:#03213f;--sun:#f2c14e;--ok:#4ade80;color-scheme:dark;--tabh:74px}
+html{background:#04193a}
+body{background:radial-gradient(120% 60% at 50% 0%,#0d4f9c 0%,#06306a 38%,#04193a 100%) fixed;padding-bottom:calc(var(--tabh) + 26px + env(safe-area-inset-bottom))}
+.wrap{gap:18px;padding-top:12px}
+.appbar{position:sticky;top:0;z-index:20;padding-top:env(safe-area-inset-top);background:linear-gradient(180deg,rgba(4,25,58,.95),rgba(4,25,58,.75));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.abar{max-width:560px;margin:0 auto;padding:8px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.appbar .brand{min-height:0;gap:8px}
+.appbar .brand svg{width:42px;height:42px;filter:drop-shadow(0 4px 10px rgba(63,184,245,.45))}
+.appbar .brand b{display:block;font-size:1.5rem;line-height:1.1;font-weight:900;background:linear-gradient(180deg,#fff,#bfe9ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.appbar .brand small{font-size:.7rem;color:var(--muted);font-weight:700}
+.tools{margin:0;align-items:center}
+.langB{background:rgba(255,255,255,.1);color:#eaf6ff;border:1px solid var(--line);padding:6px 10px;font-size:.78rem}
+.drvTop{position:static;padding:7px 12px;font-size:.82rem;background:linear-gradient(180deg,#5fd0ff,#1e9be0);color:#03213f;box-shadow:0 4px 14px rgba(43,181,240,.35)}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));border:1px solid var(--line);border-radius:22px;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 10px 30px rgba(0,0,0,.25);color:var(--fg)}
+.view{display:flex;flex-direction:column;gap:16px}
+.vtitle{margin:4px 0 0;font-size:1.6rem;font-weight:900}
+.vsub{margin:-10px 0 0;color:var(--muted);font-size:.9rem}
+.hero2{position:relative;display:flex;flex-direction:column;gap:6px}
+.hero2 h1{margin:4px 0 0;font-size:2.3rem;line-height:1.2;font-weight:900;text-shadow:0 4px 16px rgba(0,0,0,.35)}
+.hero2 h1 em{font-style:normal;background:linear-gradient(180deg,#e9fbff,#5fd0ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero2 p{margin:0;color:var(--muted);line-height:1.6}
+.photo{position:relative;margin:8px -16px 0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+.photo::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,35,77,.35),transparent 30%);pointer-events:none}
+.photo .wave{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:34px}
+.btn.gold{align-self:center;margin-top:-30px;position:relative;z-index:2;background:linear-gradient(180deg,#0b2a55,#061b3a);color:#fff;border:2px solid #f2c14e;border-radius:999px;padding:14px 28px;font-size:1.12rem;box-shadow:0 10px 26px rgba(0,0,0,.45),0 0 0 4px rgba(242,193,78,.15)}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);padding:12px 4px}
+.stats3 div{text-align:center;border-inline-start:1px solid var(--line);padding:0 4px}
+.stats3 div:first-child{border:0}
+.stats3 b{display:block;font-size:1.55rem;font-weight:900;color:#fff}
+.stats3 span{font-size:.72rem;color:var(--muted);font-weight:700;line-height:1.4;display:block}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.tile{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.04));border-radius:20px;padding:12px 4px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--fg);font:800 .76rem/1.3 var(--body);text-align:center;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+.tile-i{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:radial-gradient(circle at 30% 25%,#7fe0ff,#1e8fd8 70%);color:#fff;box-shadow:0 6px 16px rgba(30,143,216,.45),inset 0 2px 0 rgba(255,255,255,.4)}
+.tile-i .ico{width:26px;height:26px}
+.ico{width:24px;height:24px;flex:none}
+.mapcard{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center;padding:16px;text-align:start;font:inherit;cursor:pointer}
+.mapcard h3{margin:0;font-size:1.2rem;font-weight:900}
+.mapcard p{margin:4px 0 10px;color:var(--muted);font-size:.84rem;line-height:1.6}
+.mapcard .mini{width:100%;height:110px}
+.feat{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.03));border-color:var(--line);color:var(--muted)}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.04));border:1px solid var(--line);box-shadow:inset 0 1px 0 rgba(255,255,255,.16)}
+.fld{background:rgba(2,18,42,.6);border-color:var(--line);color:var(--fg)}
+.num{background:linear-gradient(180deg,#5fd0ff,#1e8fd8);color:#fff}
+.stats3 .num,.calc-out .num,.stepper .num{background:none;color:inherit;width:auto;height:auto;display:block;border-radius:0}
+#sizes .chip{border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.03));border:1.5px solid var(--line);color:var(--fg);padding:8px 4px}
+#sizes .chip b{font-size:1.1rem}
+#sizes .chip b::before{content:"💧 ";font-size:.85rem}
+#sizes .chip[aria-pressed="true"]{border-color:#f2c14e;background:linear-gradient(180deg,#2aa7ec,#0b62c4);color:#fff;box-shadow:0 0 0 3px rgba(242,193,78,.18),0 8px 18px rgba(11,98,196,.45)}
+#sizes .chip[aria-pressed="true"] small{color:#d8f1ff}
+#types{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#types .chip{border-radius:18px;padding:14px 10px;min-height:84px;text-align:start;font-weight:800;line-height:1.5;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.03));border:1.5px solid var(--line);color:var(--fg);position:relative}
+#types .chip::before{content:"🥛";display:block;font-size:1.5rem}
+#types .chip:nth-child(2)::before{content:"💧"}
+#types .chip[aria-pressed="true"]{border-color:#f2c14e;background:linear-gradient(180deg,rgba(95,208,255,.35),rgba(11,98,196,.25));color:#fff}
+#types .chip[aria-pressed="true"]::after{content:"✓";position:absolute;top:10px;inset-inline-end:10px;width:24px;height:24px;border-radius:50%;background:#f2c14e;color:#3a2a00;display:grid;place-items:center;font-size:.85rem}
+.drv{background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.04));border-color:var(--line)}
+.price b{color:#5fd0ff}
+.tag{background:rgba(242,193,78,.18);color:#ffd77a}
+.tag.fav{background:rgba(242,193,78,.25);color:#ffe39a}
+.btn.ghost{color:#9fe3ff;border-color:rgba(159,227,255,.5)}
+.empty{background:rgba(255,255,255,.05);border-color:var(--line)}
+.demoBar{background:rgba(242,193,78,.12);color:#ffe39a;border-color:rgba(242,193,78,.35)}
+footer{color:var(--muted)}
+.reg{background:#05234d}
+.sheet .in{background:#0a2e5c}
+.sheet pre{background:rgba(2,18,42,.6)}
+.toast{bottom:calc(var(--tabh) + 30px + env(safe-area-inset-bottom));background:#eaf6ff;color:#05234d;font-weight:800}
+.gchips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+.gchips::-webkit-scrollbar{display:none}
+.gchips button{flex:none;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--fg);border-radius:999px;padding:6px 14px;font:700 .84rem var(--body);cursor:pointer}
+.gchips button[aria-pressed="true"]{background:linear-gradient(180deg,#5fd0ff,#1e8fd8);color:#03213f;border-color:transparent}
+.mapwrap{padding:6px;overflow:hidden}
+#mapBox svg{display:block;width:100%;height:min(62vh,520px)}
+#omMap .pp{fill:#5fd0ff;stroke:#03213f;stroke-width:2}
+#omMap .pin text{font:900 15px var(--body);fill:#03213f}
+#omMap .pin,#omMap .dot{cursor:pointer}
+#omMap .pin.sel .pp{fill:#f2c14e}
+#omMap .dot circle:first-child{fill:rgba(95,208,255,.45)}
+#omMap .dot.sel circle:nth-child(2){fill:#f2c14e}
+#omMap .pulse{fill:none;stroke:#f2c14e;stroke-width:3}
+#omMap .lbl{font:900 17px var(--body);fill:#fff;paint-order:stroke;stroke:#03213f;stroke-width:5px}
+@media (prefers-reduced-motion:no-preference){#omMap .pulse{animation:pl 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}@keyframes pl{from{transform:scale(.6);opacity:.9}to{transform:scale(1.5);opacity:0}}}
+.mapinfo{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px 6px}
+.mapinfo div{display:grid}
+.muted{color:var(--muted);font-size:.84rem}
+.muted.small,.small{font-size:.76rem}
+.center{text-align:center}
+.btn.sm{padding:8px 14px;font-size:.88rem;border-radius:12px;box-shadow:none}
+.btn.wide{width:100%;justify-content:center}
+h3.sec{margin:6px 0 -4px;font-size:1.1rem}
+.vstack2{display:grid;gap:10px}
+.hrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px}
+.hrow div{display:grid;min-width:0}
+.hrow b{font-size:.98rem}
+.ssheet{position:fixed;inset:0;background:rgba(2,12,28,.6);display:flex;align-items:flex-end;justify-content:center;z-index:35}
+.ssheet-in{background:#0a2e5c;color:var(--fg);width:100%;max-width:560px;border-radius:24px 24px 0 0;border-top:1px solid #5fd0ff;padding:18px 16px calc(env(safe-area-inset-bottom) + 18px);max-height:88vh;overflow:auto;display:grid;gap:12px}
+.ssheet-in h3{margin:0;font-size:1.3rem}
+.ssheet-in p{margin:0}
+.calc-row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:800}
+.stepper{display:flex;align-items:center;gap:6px}
+.stepper button{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.08);color:#fff;font-size:1.3rem;cursor:pointer}
+.stepper b{min-width:36px;text-align:center;font-size:1.4rem}
+.calc-l{font-weight:800}
+.seg3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg3 button{border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--fg);border-radius:12px;padding:8px 4px;font:700 .8rem var(--body);cursor:pointer}
+.seg3 button[aria-pressed="true"]{background:linear-gradient(180deg,#5fd0ff,#1e8fd8);color:#03213f;border-color:transparent}
+.calc-out{display:grid;gap:6px}
+.calc-big{display:flex;justify-content:space-between;align-items:baseline;background:rgba(95,208,255,.12);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.calc-big b{font-size:1.5rem;color:#5fd0ff}
+.calc-line{display:flex;justify-content:space-between;padding:6px 10px;border-radius:10px;font-size:.92rem}
+.calc-line.rec{background:rgba(242,193,78,.15);border:1px solid rgba(242,193,78,.5);color:#ffe39a}
+.calc-line.rec span::after{content:" ✓"}
+#tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom));width:min(540px,calc(100% - 20px));height:var(--tabh);z-index:25;display:grid;grid-template-columns:repeat(5,1fr);align-items:end;padding:6px 6px 8px;border-radius:26px;background:rgba(7,35,78,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line);box-shadow:0 12px 34px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.12)}
+#tabbar button{border:0;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;font:800 .7rem var(--body);cursor:pointer;height:100%}
+#tabbar button[aria-current="page"]{color:#f2c14e}
+#tabbar .ico{width:25px;height:25px}
+#tabbar .mid .bubble{width:62px;height:62px;margin-top:-34px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#8fe6ff,#1e8fd8 60%,#0b4fae);color:#fff;border:3px solid rgba(255,255,255,.25);box-shadow:0 10px 24px rgba(30,143,216,.55)}
+#tabbar .mid .ico{width:30px;height:30px}
+#tabbar .mid{color:#eaf6ff}
+@media (max-width:380px){.tile{font-size:.7rem}.tile-i{width:42px;height:42px}.hero2 h1{font-size:2rem}}
+</style>
 </head>
 <body>
-<div class="wrap">
-
-  <header class="hero">
+<header class="appbar">
+  <div class="abar">
     <div class="brand">
-      <svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="112" fill="#0B6E7A"/><path d="M256 86S130 230 130 302a126 126 0 0 0 252 0C382 230 256 86 256 86Z" fill="#fff"/><path d="M196 310a60 60 0 0 0 60 60" stroke="#0B6E7A" stroke-width="22" fill="none" stroke-linecap="round"/></svg>
-      <span data-en="Suqya">سُقيا</span>
+      <svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="dg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bff0ff"/><stop offset=".45" stop-color="#3fb8f5"/><stop offset="1" stop-color="#0a5bc4"/></linearGradient></defs><path d="M32 4S12 27 12 40a20 20 0 0 0 40 0C52 27 32 4 32 4Z" fill="url(#dg)"/><path d="M22 41a10 10 0 0 0 10 10" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".9"/><ellipse cx="25" cy="27" rx="4" ry="7" fill="#fff" opacity=".45" transform="rotate(25 25 27)"/></svg>
+      <div><b data-en="Suqya">سُقيا</b><small data-en="Water tankers">صهاريج المياه</small></div>
     </div>
     <div class="tools">
-      <button type="button" id="shareApp" class="langB" data-en="📤 Share">📤 شارك</button>
       <button type="button" id="langBtn" class="langB" aria-label="Language / اللغة">🌐 EN</button>
+      <button type="button" id="shareApp" class="langB" data-en="📤">📤</button>
+      <button class="drvTop" type="button" id="drvTop" data-en="🚛 Driver">🚛 سايق</button>
     </div>
-    <h1 data-en="A water tanker to your doorstep 🚛💧">صهريج ماي لين باب بيتك 🚛💧</h1>
-    <p data-en="Pick your area and size, compare nearby tanker prices, and order in one tap: call, SMS or WhatsApp.">اختار المنطقة والحجم، وشوف أسعار الصهاريج القريبة، واطلب بضغطة: اتصال أو رسالة أو واتساب.</p>
+  </div>
+</header>
+<div class="wrap">
 
-    <!-- water tanker truck illustration (drawn here, no external images) -->
-    <svg class="truck" viewBox="0 0 400 210" role="img" aria-label="صهريج ماي">
-      <defs>
-        <linearGradient id="tank" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4fbfc"/><stop offset=".45" stop-color="#d6eef1"/><stop offset="1" stop-color="#8ec4cc"/></linearGradient>
-        <linearGradient id="cab" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14a0b2"/><stop offset="1" stop-color="#0b6e7a"/></linearGradient>
-        <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e9fbff"/><stop offset="1" stop-color="#9cd3dc"/></linearGradient>
-        <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9a77a"/><stop offset="1" stop-color="#b48f60"/></linearGradient>
-      </defs>
-      <!-- sun and Hajar mountains -->
-      <circle cx="330" cy="40" r="20" fill="#f6c45a" opacity=".9"/>
-      <path d="M0 150 L50 104 L86 132 L132 88 L180 140 L232 96 L280 138 L330 100 L400 146 L400 210 L0 210 Z" fill="url(#hill)" opacity=".55"/>
-      <path d="M0 168 Q100 150 200 164 T400 160 L400 210 L0 210 Z" fill="#e7cf9f"/>
-      <!-- road -->
-      <rect x="0" y="176" width="400" height="34" fill="#5f6b6e"/>
-      <path d="M10 193 h36 M80 193 h36 M150 193 h36 M220 193 h36 M290 193 h36 M360 193 h36" stroke="#f3f0e6" stroke-width="3" stroke-linecap="round"/>
-      <ellipse cx="200" cy="180" rx="150" ry="6" fill="#000" opacity=".18"/>
-      <g class="body">
-        <!-- chassis -->
-        <rect x="74" y="146" width="262" height="12" rx="3" fill="#33414a"/>
-        <!-- tank -->
-        <rect x="132" y="78" width="204" height="70" rx="35" fill="url(#tank)" stroke="#6fa9b2" stroke-width="2"/>
-        <ellipse cx="336" cy="113" rx="10" ry="34" fill="#bfe1e6" stroke="#6fa9b2" stroke-width="2"/>
-        <rect x="140" y="104" width="190" height="10" fill="#0b6e7a" opacity=".85"/>
-        <rect x="140" y="117" width="190" height="4" fill="#f2b544"/>
-        <!-- tank bands -->
-        <path d="M178 80v66 M232 79v68 M286 80v66" stroke="#6fa9b2" stroke-width="2" opacity=".6"/>
-        <!-- logo on tank -->
-        <circle cx="205" cy="94" r="9" fill="#0b6e7a"/>
-        <path d="M205 87s-5 6-5 9a5 5 0 0 0 10 0c0-3-5-9-5-9z" fill="#fff"/>
-        <text x="258" y="99" font-family="Tahoma,Geeza Pro,sans-serif" font-size="15" font-weight="700" fill="#0b6e7a" text-anchor="middle">سُقيا</text>
-        <text x="258" y="139" font-family="Tahoma,Geeza Pro,sans-serif" font-size="10" fill="#0b6e7a" text-anchor="middle">ماء صالح للشرب</text>
-        <!-- manhole & ladder -->
-        <rect x="244" y="70" width="26" height="10" rx="3" fill="#8bbcc4"/>
-        <path d="M322 82v58 M330 82v58 M322 96h8 M322 110h8 M322 124h8" stroke="#56707a" stroke-width="2"/>
-        <!-- hose reel at the back -->
-        <circle cx="344" cy="150" r="7" fill="#33414a"/>
-        <path d="M344 150 q14 6 14 18" stroke="#2a3a40" stroke-width="3" fill="none"/>
-        <circle class="drop" cx="358" cy="170" r="2.6" fill="#38b6c9"/>
-        <!-- cab -->
-        <path d="M40 150 V106 q0-20 18-26 l34-10 q12-3 18 8 l16 26 V150 Z" fill="url(#cab)"/>
-        <path d="M60 86 l30-8 q7-2 10 4 l14 24 H60 Z" fill="url(#glass)" stroke="#0a5560" stroke-width="1.5"/>
-        <rect x="110" y="110" width="16" height="30" rx="3" fill="#0a5f69"/>
-        <rect x="64" y="114" width="20" height="3" rx="1.5" fill="#cdeef2"/>
-        <rect x="34" y="132" width="10" height="14" rx="3" fill="#f2b544"/>
-        <rect x="36" y="146" width="22" height="8" rx="2" fill="#2a3a40"/>
-        <circle cx="46" cy="120" r="4" fill="#fff6c2"/>
-        <!-- exhaust -->
-        <rect x="124" y="70" width="5" height="40" rx="2" fill="#56707a"/>
-      </g>
-      <!-- wheels -->
-      <g class="wheel"><circle cx="84" cy="160" r="17" fill="#1f2a30"/><circle cx="84" cy="160" r="8" fill="#9aa6ab"/><path d="M84 152v16M76 160h16" stroke="#1f2a30" stroke-width="2.5"/></g>
-      <g class="wheel"><circle cx="250" cy="160" r="17" fill="#1f2a30"/><circle cx="250" cy="160" r="8" fill="#9aa6ab"/><path d="M250 152v16M242 160h16" stroke="#1f2a30" stroke-width="2.5"/></g>
-      <g class="wheel"><circle cx="296" cy="160" r="17" fill="#1f2a30"/><circle cx="296" cy="160" r="8" fill="#9aa6ab"/><path d="M296 152v16M288 160h16" stroke="#1f2a30" stroke-width="2.5"/></g>
-    </svg>
-    <div class="cta"><a class="btn" href="#order" data-en="Order a tanker now →">اطلب صهريج الحين ←</a></div>
-    <button class="drvTop" type="button" id="drvTop" data-en="🚛 I'm a driver">🚛 أنا سايق</button>
-  </header>
+<section class="view" id="v-home">
+  <div class="hero2">
+    <h1 data-enh="Water to your<br><em>doorstep</em>">الماء يوصلك<br><em>لباب بيتك</em></h1>
+    <p data-en="Compare nearby tanker prices and order in one tap: call, SMS or WhatsApp.">قارن أسعار الصهاريج القريبة واطلب بضغطة: اتصال أو رسالة أو واتساب.</p>
+    <div class="photo"><img src="hero-truck.jpg" alt="صهريج مياه" data-ena="Water tanker" width="1200" height="675"><svg class="wave" viewBox="0 0 400 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 22C60 4 120 4 200 20s140 16 200-2v22H0z" fill="#05234d"/><path d="M0 26C70 10 130 12 200 26s140 12 200-4" fill="none" stroke="#5fd0ff" stroke-width="2" opacity=".7"/></svg></div>
+    <button class="btn gold" type="button" id="heroGo" data-en="💧 Order water now">💧 اطلب المياه الآن</button>
+  </div>
+
+  <div class="glass stats3">
+    <div><b class="num" id="stN">…</b><span data-en="Tankers">صهريج مسجّل</span></div>
+    <div><b class="num" id="stW">…</b><span data-en="Wilayats covered">ولاية مغطّاة</span></div>
+    <div><b class="num" id="stP">…</b><span data-en="From (2,000 gal, OMR)">يبدأ من (2000 جالون، ر.ع)</span></div>
+  </div>
+
+  <div class="tiles" id="tiles"></div>
+
+  <button class="glass mapcard" type="button" id="mapCta">
+    <div><h3 data-en="Coverage across Oman">تغطية في كل عُمان</h3><p data-en="See how many tankers serve each wilayat on the map.">شوف كم صهريج يخدم كل ولاية على الخريطة.</p><span class="btn sm ghost" data-en="🗺️ Open map">🗺️ عرض الخريطة</span></div>
+    <svg class="mini" viewBox="0 0 200 120" aria-hidden="true"><path d="M150 14l8 8 12 4 10 12 6 10-8 12-14 8-18 6-16 14-30 12-26 4-14-6 10-14 26-6 18-14 10-18 4-14 8-10z" fill="#0b3f7a" stroke="#5fd0ff" stroke-width="1.6"/><g fill="#5fd0ff"><path d="M150 40c-4-5-7-8-7-12a7 7 0 0 1 14 0c0 4-3 7-7 12z"/><path d="M118 70c-4-5-7-8-7-12a7 7 0 0 1 14 0c0 4-3 7-7 12z"/><path d="M84 92c-4-5-7-8-7-12a7 7 0 0 1 14 0c0 4-3 7-7 12z"/></g></svg>
+  </button>
 
   <div class="feats">
     <div class="feat" data-en="Nearest tanker to your area"><b>📍</b>أقرب صهريج لمنطقتك</div>
     <div class="feat" data-en="Clear price before you order"><b>💰</b>السعر واضح قبل الطلب</div>
     <div class="feat" data-en="Order by call, SMS or WhatsApp"><b>📞</b>اطلب باتصال أو رسالة أو واتساب</div>
   </div>
+  <section class="card join" id="join">
+    <h2 data-en="Got a tanker? 🚛">عندك صهريج؟ 🚛</h2>
+    <p data-en="Register on Suqya and get customer orders in your area directly by call, SMS or WhatsApp.">سجّل في سُقيا وتوصلك طلبات الزبائن في منطقتك مباشرة باتصال أو رسالة أو واتساب.</p>
+    <button class="btn" type="button" id="joinBtn" data-en="Register as a tanker driver">سجّل كسايق صهريج</button>
+  </section>
+  <footer data-enh="Suqya — order your tanker<br>© Salem Aljabri — Muscat, Sultanate of Oman<br><a href=&quot;https://techlights.app&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; dir=&quot;ltr&quot; style=&quot;color:inherit;font-weight:700&quot;>🌐 techlights.app</a><br><a href=&quot;privacy.html#en&quot; style=&quot;color:var(--muted)&quot;>Privacy Policy</a><span id=&quot;rateLink&quot; hidden><br><a id=&quot;rateA&quot; href=&quot;#&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; style=&quot;color:var(--brand);font-weight:700&quot;>⭐ Enjoying Suqya? Rate it on the App Store</a></span><span id=&quot;oldLink&quot;><br><a href=&quot;old/&quot; style=&quot;color:var(--muted)&quot;>Old version of Suqya</a></span>">سُقيا — اطلب صهريجك<br>© سالم الجابري — مسقط، سلطنة عُمان<br><a href="https://techlights.app" target="_blank" rel="noopener" dir="ltr" style="color:inherit;font-weight:700">🌐 techlights.app</a><br><a href="privacy.html" style="color:var(--muted)">سياسة الخصوصية</a><span id="rateLink" hidden><br><a id="rateA" href="#" target="_blank" rel="noopener" style="color:var(--brand);font-weight:700">⭐ عجبك سُقيا؟ قيّمه في App Store</a></span><span id="oldLink"><br><a href="old/" style="color:var(--muted)">النسخة القديمة من سُقيا</a></span></footer>
+</section>
 
+<section class="view" id="v-order" hidden>
   <div class="demoBar" id="demoBar" hidden data-enh="🧪 <b>Demo version:</b> tankers and prices are examples for now, and orders don't reach anyone. As soon as real drivers join, ordering works right away.">🧪 <b>نسخة تجريبية:</b> الصهاريج والأسعار الحين أمثلة، والطلب ما يوصل لأحد. أول ما ينضاف سوّاقين حقيقيين يشتغل الطلب على طول.</div>
-
   <section class="card" id="order" aria-labelledby="orderTitle">
     <h2 id="orderTitle" data-en="Order a tanker">طلب صهريج</h2>
     <div class="note" data-en="Fill in the steps and the available tankers appear below 👇">عبّ الخطوات وتطلع لك الصهاريج المتوفرة تحت 👇</div>
@@ -277,20 +372,26 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
       <input id="cname" class="fld" style="margin-top:8px" type="text" placeholder="اسمك (اختياري)" data-enp="Your name (optional)" aria-label="الاسم" autocomplete="name">
     </div>
   </section>
-
   <section aria-labelledby="resTitle">
     <h2 id="resTitle" data-en="🚛 Available tankers" style="margin:4px 0 10px;font-size:1.15rem">🚛 الصهاريج المتوفرة <small id="resCount" style="font-weight:400;color:var(--muted);font-size:.8rem"></small></h2>
     <div class="drivers" id="drivers"></div>
   </section>
+</section>
 
-  <section class="card join" id="join">
-    <h2 data-en="Got a tanker? 🚛">عندك صهريج؟ 🚛</h2>
-    <p data-en="Register on Suqya and get customer orders in your area directly by call, SMS or WhatsApp.">سجّل في سُقيا وتوصلك طلبات الزبائن في منطقتك مباشرة باتصال أو رسالة أو واتساب.</p>
-    <button class="btn" type="button" id="joinBtn" data-en="Register as a tanker driver">سجّل كسايق صهريج</button>
-  </section>
+<section class="view" id="v-map" hidden>
+  <h1 class="vtitle" data-en="Tankers on the map">الصهاريج على الخريطة</h1>
+  <p class="vsub" data-en="The number on a pin is how many tankers deliver to that wilayat.">الرقم على الدبوس هو عدد الصهاريج اللي توصل للولاية.</p>
+  <div class="gchips" id="govChips"></div>
+  <div class="glass mapwrap"><div id="mapBox"></div><div class="mapinfo" id="mapInfo"></div></div>
+</section>
 
-  <footer data-enh="Suqya — order your tanker<br>© Salem Aljabri — Muscat, Sultanate of Oman<br><a href=&quot;https://techlights.app&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; dir=&quot;ltr&quot; style=&quot;color:inherit;font-weight:700&quot;>🌐 techlights.app</a><br><a href=&quot;privacy.html#en&quot; style=&quot;color:var(--muted)&quot;>Privacy Policy</a><span id=&quot;rateLink&quot; hidden><br><a id=&quot;rateA&quot; href=&quot;#&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; style=&quot;color:var(--brand);font-weight:700&quot;>⭐ Enjoying Suqya? Rate it on the App Store</a></span><span id=&quot;oldLink&quot;><br><a href=&quot;old/&quot; style=&quot;color:var(--muted)&quot;>Old version of Suqya</a></span>">سُقيا — اطلب صهريجك<br>© سالم الجابري — مسقط، سلطنة عُمان<br><a href="https://techlights.app" target="_blank" rel="noopener" dir="ltr" style="color:inherit;font-weight:700">🌐 techlights.app</a><br><a href="privacy.html" style="color:var(--muted)">سياسة الخصوصية</a><span id="rateLink" hidden><br><a id="rateA" href="#" target="_blank" rel="noopener" style="color:var(--brand);font-weight:700">⭐ عجبك سُقيا؟ قيّمه في App Store</a></span><span id="oldLink"><br><a href="old/" style="color:var(--muted)">النسخة القديمة من سُقيا</a></span></footer>
+<section class="view" id="v-hist" hidden>
+  <h1 class="vtitle" data-en="My orders">طلباتي</h1>
+  <div id="histBody" class="vstack2"></div>
+</section>
+
 </div>
+<nav id="tabbar" aria-label="Tabs"></nav>
 
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
   <div class="in">
@@ -484,10 +585,11 @@ async function reportDriver(d){
 function matches(){
   const hid = hiddenSet();
   return DATA.drivers.filter(d => !hid.has(dkey(d)) && covers(d) && d.types.includes(S.type) && d.prices[String(S.gal)] != null)
-    .sort((x, y) => (y.available !== false) - (x.available !== false) || x.prices[String(S.gal)] - y.prices[String(S.gal)]);
+    .sort((x, y) => (y.available !== false) - (x.available !== false) || (window.SUI_isFav ? SUI_isFav(y) - SUI_isFav(x) : 0) || x.prices[String(S.gal)] - y.prices[String(S.gal)]);
 }
 
-function renderDrivers(){
+function renderDrivers(){ renderDrivers0(); if(window.SUI) SUI.after(); }
+function renderDrivers0(){
   const box = $('drivers'); box.replaceChildren();
   $('demoBar').hidden = !DATA.drivers.length || !DATA.drivers.every(d => d.demo);
   if(!S.area){ $('resCount').textContent = ''; const e = document.createElement('div'); e.className = 'empty'; e.textContent = L('اختار المحافظة والولاية فوق عشان نطلع لك الصهاريج اللي توصل لك 📍', 'Pick your governorate and wilayat above to see the tankers that deliver to you 📍'); box.append(e); return; }
@@ -503,8 +605,9 @@ function renderDrivers(){
     const el = document.createElement('article'); el.className = 'drv' + (busy ? ' busy' : '');
     const info = document.createElement('div');
     const h = document.createElement('h3'); h.textContent = d.name;
+    if(window.SUI_isFav && SUI_isFav(d)){ const t = document.createElement('span'); t.className = 'tag fav'; t.textContent = L('⭐ مفضّل', '⭐ Favourite'); h.append(t); }
     if(busy){ const t = document.createElement('span'); t.className = 'tag busy'; t.textContent = L('مشغول الحين', 'Busy now'); h.append(t); }
-    else if(i === 0 && list.filter(x => x.available !== false).length > 1){ const t = document.createElement('span'); t.className = 'tag'; t.textContent = L('الأرخص', 'Cheapest'); h.append(t); }
+    else if(list.filter(x => x.available !== false).length > 1 && d.prices[String(S.gal)] === Math.min(...list.filter(x => x.available !== false).map(x => x.prices[String(S.gal)]))){ const t = document.createElement('span'); t.className = 'tag'; t.textContent = L('الأرخص', 'Cheapest'); h.append(t); }
     const m = document.createElement('div'); m.className = 'meta';
     m.textContent = [d.note, L('يغطي: ', 'Covers: ') + areaText(d)].filter(Boolean).join(' · ');
     info.append(h, m);
@@ -523,7 +626,8 @@ function renderDrivers(){
     const mod = document.createElement('div'); mod.className = 'mod';
     const rp = document.createElement('button'); rp.type = 'button'; rp.textContent = L('🚩 إبلاغ', '🚩 Report'); rp.onclick = () => reportDriver(d);
     const hd = document.createElement('button'); hd.type = 'button'; hd.textContent = L('🚫 إخفاء', '🚫 Hide'); hd.onclick = () => hideDriver(d);
-    mod.append(rp, hd);
+    const fv = document.createElement('button'); fv.type = 'button'; fv.textContent = window.SUI_isFav && SUI_isFav(d) ? L('★ شيل من المفضّلة', '★ Unfavourite') : L('☆ أضف للمفضّلة', '☆ Favourite'); fv.onclick = () => window.SUI_toggleFav && SUI_toggleFav(d);
+    mod.append(fv, rp, hd);
     el.append(info, pr, go, mod); box.append(el);
   });
   hidNote(box);
@@ -569,6 +673,7 @@ function order(d, via){
   store.set('suqya-last', { gov:S.gov, area:S.area, gal:S.gal, type:S.type });
   const msg = orderText(d);
   const phone = normPhone(d.phone);
+  if(!d.demo && phone.length >= 10 && window.SUI_log) SUI_log(d, via);
   if(via === 'call' && phone.length >= 10 && !d.demo){ window.location.href = 'tel:+' + phone; return; }
   if(d.demo || phone.length < 10){
     openSheet(L('🧪 هذا طلب تجريبي', '🧪 This is a demo order'), msg, L('هذا الصهريج مثال للتجربة، فالطلب ما انرسل لأحد. هذي الرسالة اللي بتوصل السايق لما يكون مسجّل.', 'This tanker is a demo example, so the order wasn\'t sent to anyone. This is the message a registered driver would receive.'));
@@ -754,6 +859,7 @@ async function refreshDrivers(){
 }
 fetch('drivers.json', { cache:'no-store' }).then(r => r.ok ? r.json() : null).then(j => { if(j && Array.isArray(j.drivers)){ DATA = j; DEMO = j.drivers; renderControls(); renderDrivers(); } }).catch(() => {}).finally(refreshDrivers);
 </script>
+<script src="suqya-ui.js"></script>
 <!-- share kit: window.shareKit({ title, text, url }) — WhatsApp, Instagram, Snapchat, Facebook, X, copy, more -->
 <style>
 .shk-scrim{position:fixed;inset:0;z-index:9990;background:rgba(10,12,16,.55);display:flex;align-items:flex-end;justify-content:center}

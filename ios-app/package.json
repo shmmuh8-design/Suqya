@@ -4,7 +4,7 @@
   "private": true,
   "description": "سُقيا — تطبيق آيفون وأندرويد (Capacitor)",
   "scripts": {
-    "build": "rm -rf www && mkdir -p www && cp ../index.html ../privacy.html ../config.js ../drivers.json ../manifest.json ../icon.svg ../icon-180.png www/",
+    "build": "rm -rf www && mkdir -p www && cp ../index.html ../privacy.html ../config.js ../drivers.json ../manifest.json ../icon.svg ../icon-180.png ../suqya-ui.js ../hero-truck.jpg www/",
     "assets": "capacitor-assets generate --ios --iconBackgroundColor '#0B6E7A' --splashBackgroundColor '#0B6E7A' --splashBackgroundColorDark '#0a3d44'",
     "assets:android": "capacitor-assets generate --android --iconBackgroundColor '#0B6E7A' --splashBackgroundColor '#0B6E7A' --splashBackgroundColorDark '#0a3d44'"
   },
